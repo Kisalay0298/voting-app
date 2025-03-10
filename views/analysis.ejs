@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            margin: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voting Analysis</h1>
+
+        <!-- Voter Turnout Chart -->
+        <h2>Voter Turnout</h2>
+        <div class="chart-container">
+            <canvas id="votingChart"></canvas>
+        </div>
+
+        <!-- Candidate Vote Count Chart -->
+        <h2>Candidate Vote Count</h2>
+        <div class="chart-container">
+            <canvas id="candidateChart"></canvas>
+        </div>
+
+        <!-- Party-wise Vote Count Chart -->
+        <h2>Party-wise Vote Count</h2>
+        <div class="chart-container">
+            <canvas id="partyChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Voter Turnout Chart (Pie)
+        var ctx1 = document.getElementById('votingChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['Voted', 'Not Voted'],
+                datasets: [{
+                    data: [<%= votedCount %>, <%= notVotedCount %>],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // Candidate Vote Count Chart (Bar)
+        var ctx2 = document.getElementById('candidateChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: <%- candidateNames %>,  // Ensure JSON format
+                datasets: [{
+                    label: 'Votes',
+                    data: <%- candidateVotes %>,
+                    backgroundColor: '#007bff',
+                    borderColor: '#0056b3',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Party-wise Vote Count Chart (Bar)
+        var ctx3 = document.getElementById('partyChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: <%- partyNames %>,
+                datasets: [{
+                    label: 'Votes by Party',
+                    data: <%- partyVotes %>,
+                    backgroundColor: [
+                        '#4CAF50', '#2196F3', '#F44336', 
+                        '#FFC107', '#9C27B0', '#795548'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Voting Card */
+        .container {
+            background: white;
+            width: 380px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transition: 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Form Elements */
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        select:focus, input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🗳️ Vote for Your Candidate</h2>
+
+        <% if (voter.hasVoted) { %>
+            <div class="alert alert-warning">
+                <h2>You have already voted!</h2>
+                <p>You cannot vote again.</p>
+                <a href="/user/profile/<%= voter._id %>" class="button">Back to Profile</a>
+            </div>
+        <% } else { %>
+            <!-- Your voting form here -->
+            <form id="voteForm" action="/voters/vote" method="POST">
+                <select name="candidateId" required>
+                    <% candidates.forEach(candidate => { %>
+                        <option value="<%= candidate._id %>">
+                            <%= candidate.name %> - <%= candidate.party %>
+                        </option>
+                    <% }); %>
+                </select>
+                <input type="password" name="password" required placeholder="Enter your password to confirm">
+                <button type="submit">Submit Vote</button>
+            </form>
+        <% } %>
+    </div>
+
+    <script>
+        function confirmVote() {
+            return confirm("Are you sure you want to submit your vote? This action cannot be undone.");
+        }
+        document.getElementById('voteForm')?.addEventListener('submit', function(e) {
+        if (<%= voter.hasVoted %>) {
+            e.preventDefault();
+            alert('You have already voted!');
+            window.location.href = '/user/profile/<%= voter._id %>';
+            return false;
+        }
+    });
+    </script>
+</body>
+</html>

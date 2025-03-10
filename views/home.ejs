@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header styling */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .header-container h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Dropdown styling */
+        .filter-container {
+            display: flex;
+            align-items: center;
+        }
+        .filter-container label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        select {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e9ecef;
+            transition: 0.3s;
+        }
+
+        p {
+            font-size: 16px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with title and filter dropdown -->
+        <div class="header-container">
+            <h1 id="tableHeading">All Registered Users</h1>
+            <div class="filter-container">
+                <label for="filter">Filter Voters: </label>
+                <select id="filter" onchange="filterUsers()">
+                    <option value="all">All Users</option>
+                    <option value="eligible">Eligible Voters</option>
+                    <option value="ineligible">Ineligible Voters</option>
+                </select>
+            </div>
+        </div>
+    
+        <% if (users.length > 0) { %>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Name</th>
+                        <th>Aadhar ID</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Eligible</th>
+                        <th>Voted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach((user, ind) => { %>
+                        <tr class="user-row" 
+                            data-voted="<%= user.hasVoted ? 'yes' : 'no' %>" 
+                            data-age="<%= user.age %>">
+                            <td><%= ind+1 %></td>
+                            <td><%= user.name %></td>
+                            <td><%= user.aadharId %></td>
+                            <td><%= user.gender %></td>
+                            <td><%= user.age %></td>
+                            <td><%= user.age >= 18 ? "yes" : "no" %></td>
+                            <td><%= user.hasVoted ? 'yes' : 'no' %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No users found.</p>
+        <% } %>
+    </div>
+    
+    <script>
+        function filterUsers() {
+            const filterValue = document.getElementById("filter").value;
+            const rows = document.querySelectorAll(".user-row");
+            const heading = document.getElementById("tableHeading");
+    
+            // Update heading based on filter
+            switch(filterValue) {
+                case "all":
+                    heading.textContent = "All Registered Users";
+                    break;
+                case "eligible":
+                    heading.textContent = "Eligible Voters (Age ≥ 18)";
+                    break;
+                case "ineligible":
+                    heading.textContent = "Ineligible Voters (Age < 18)";
+                    break;
+            }
+    
+            rows.forEach(row => {
+                const age = parseInt(row.getAttribute("data-age"));
+    
+                if (filterValue === "all") {
+                    row.style.display = "table-row";
+                } else if (filterValue === "eligible" && age >= 18) {
+                    row.style.display = "table-row";
+                } else if (filterValue === "ineligible" && age < 18) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

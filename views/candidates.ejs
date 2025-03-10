@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Candidates</title>
+    <style>
+        /* General Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Button Styling */
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            margin: 5px;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .analysis{
+            margin-top: 30px;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Election Candidates</h1>
+
+        <!-- Candidate Table -->
+        <% if (candidates.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Party</th>
+                        <th>Age</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% candidates.forEach((candidate, ind) => { %>
+                        <tr>
+                            <td><%= ind + 1 %></td>
+                            <td><%= candidate.name %></td>
+                            <td><%= candidate.gender %></td>
+                            <td><%= candidate.party %></td>
+                            <td><%= candidate.age %></td>
+                            <td><%= candidate.voteCount %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+
+        <% } else { %>
+            <p>No candidates found.</p>
+        <% } %>
+
+        <% if(voter !== null && voter !== undefined) { %>
+            <% if (isAdmin) { %>
+                <div class="analysis">
+                    <!-- Voter Statistics -->
+                    <h2>Voting Statistics</h2>
+                    <h3>Total Voters: <%= totalVoters %></h3>
+                    <h4>Voted: <%= votedCount %> | Not Voted: <%= notVotedCount %></h4>
+
+                    <!-- Buttons -->
+                    <div class="button-container">
+                        <button class="button" onclick="window.location.href='/user'">View Voters</button>
+                        <button class="button" onclick="window.location.href='/admin/addCandidate'">Add Candidate</button>
+                        <button class="button" onclick="window.location.href='/voters/vote/analysis'">Vote Analysis</button>
+                    </div>
+                </div>
+
+            <% } else { %>
+
+                <div class="button-container">
+                    <button class="button" onclick="window.location.href='/user'">View Voters</button>
+                    <button class="button" onclick="window.location.href='/user/viewAllCandidates'">Vote</button>
+                </div>
+
+            <% } %>
+        <% } else { %>
+         
+            <div class="button-container">
+                <button class="button" onclick="window.location.href='/user'">View Voters</button>
+                <button class="button" onclick="window.location.href='/login'">Login To Vote</button>
+            </div>
+
+        <% } %>
+    </div>
+
+    <script>
+        // Check if votedCount and notVotedCount are defined before using them
+        <% if (typeof votedCount !== 'undefined' && typeof notVotedCount !== 'undefined') { %>
+            const votedCount = <%= votedCount %>;
+            const notVotedCount = <%= notVotedCount %>;
+    
+            const voterPieCtx = document.getElementById('voterPieChart')?.getContext('2d');
+            if (voterPieCtx) {
+                new Chart(voterPieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Voted', 'Not Voted'],
+                        datasets: [{
+                            data: [votedCount, notVotedCount],
+                            backgroundColor: ['#28a745', '#dc3545'],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        <% } %>
+    </script>
+    
+</body>
+</html>

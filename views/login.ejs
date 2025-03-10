@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+        }
+
+        /* Login Container */
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.05);
+            outline: none;
+        }
+
+        input:focus {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Buttons */
+        .button {
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background: #0056b3;
+            box-shadow: 0px 5px 15px rgba(0, 91, 187, 0.5);
+        }
+
+        /* Links Section */
+        .links {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .links button {
+            background-color: #28a745;
+            flex: 1;
+            margin: 5px;
+        }
+
+        .links button:hover {
+            background-color: #1e7e34;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <label for="loginId">Aadhar ID or Phone:</label>
+            <input type="text" name="loginId" id="loginId" placeholder="Enter Aadhar ID or Phone">
+            
+            <label>Password:</label>
+            <input type="password" name="password" placeholder="Enter Password:" required />
+
+            <button type="submit" class="button">Login</button>
+        </form>
+        
+        <div class="links">
+            <button class="button" onclick="window.location.href='/signup'">Signup</button>
+            <button class="button" onclick="window.location.href='/candidates'">Candidates</button>
+        </div>
+    </div>
+</body>
+</html>

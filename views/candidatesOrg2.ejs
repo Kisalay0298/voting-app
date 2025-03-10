@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Candidates</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .chart-container {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Election Candidates</h1>
+
+        <% if (users.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Party</th>
+                        <th>Age</th>
+                        <th>Vote Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach((user, ind) => { %>
+                        <tr>
+                            <td><%= ind+1 %></td>
+                            <td><%= user.name %></td>
+                            <td><%= user.gender %></td>
+                            <td><%= user.party %></td>
+                            <td><%= user.age %></td>
+                            <td><%= user.voteCount %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+
+            <!-- Chart Container -->
+            <div class="chart-container">
+                <canvas id="voteChart"></canvas>
+            </div>
+
+            <script>
+                // Data from the server
+                const candidateNames = <%- JSON.stringify(users.map(user => user.name)) %>;
+                const voteCounts = <%- JSON.stringify(users.map(user => user.voteCount)) %>;
+
+                // Generate Bar Chart
+                const ctx = document.getElementById('voteChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: candidateNames,
+                        datasets: [{
+                            label: 'Votes Received',
+                            data: voteCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        <% } else { %>
+            <p>No candidates found.</p>
+        <% } %>
+    </div>
+</body>
+</html>
