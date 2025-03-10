@@ -13,11 +13,14 @@ const partySchema = new mongoose.Schema({
     leader: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'voters',
+    },
+    formedBy: {
+        type: Object,
         required: true
     },
     members: [{
         candidate: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Object,
             ref: 'voters', // Candidate should be a registered user
             required: true
         },
@@ -30,6 +33,17 @@ const partySchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    status: [{ 
+        formationStatus:{
+            type: String, 
+            enum: ["pending", "approved", "rejected"], 
+            default: "pending" 
+        },
+        formedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     result: {
         type: String,
         enum: ['won', 'lost', 'pending'],

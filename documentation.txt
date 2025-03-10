@@ -1,0 +1,110 @@
+ROUTES:
+
+    /:
+        /home:
+            (before):-
+                -display candidates in the election
+            (after):-
+                -display display candidates with the voting lead and the winner of the election
+        
+        /signup:
+            (before):
+                -display signup page
+            (after):
+                -lands to login page
+        
+        /login:
+            (before):-
+                -display login page
+            (after):-
+                -lands to profile page
+
+        
+    /user:
+        /profile:
+            (before):-
+                -display profile page
+                - needs to update the profile
+                - user/voters before verification of voting eligibility
+                - see candidates
+                features:
+                    - view candidates and verify profile button
+                    - get mobile number verification
+            (after):-
+                - user API changed to voter API
+
+            (after election):-
+                - disable voting buttons
+                - display election results
+
+
+    /voter:
+        /profile:
+            (before):-
+                - becomes eligible to vote
+                - becomes eligible to form party or join any party as a candidate if AGE > 25
+                features:
+                    - fight election button
+                    - join party button to request party leader
+                    - view candidates button
+                    - poll vote
+            (after polling):-
+                - disable voting buttons
+                - display election results button
+                - disable update button
+                features: 
+                    - logout
+
+    /candidate:
+        /profile:
+            (before):-
+                - API was on /voter/update
+                features:-
+                    - voter functionality
+            (after):-
+                - can approach to any other party leader to change the party
+            (after election):-
+                - can view & analyze votes button
+                - can view election results and stats of candidate
+                - can view election results and stats of party collectively
+                features:-
+                    - can view election results and stats of candidate
+
+
+    /admin:
+        /profile:
+            (before):-
+                - see the requests of user verification
+                - see the list of voters, candidates, party
+                - see the list of candidates
+                features:-
+                - approve or reject requestes
+                - adds party
+                - start election
+                - abort the election
+            (after):-
+                - broadcast the election result
+            (after election):-
+                - reschedule the election
+                - start the timer again
+                features:-
+                -
+
+
+    /sub-API:
+        /API:
+            (before):-
+                - 
+                features:-
+                -
+            (after):-
+                - 
+            (after election):-
+                -
+                features:-
+                -
+
+
+
+
+

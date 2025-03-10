@@ -10,13 +10,13 @@ async function handleUserGetData(req, res) {
         const token = req.cookies?.vToken;
 
         if (!token) {
-            return res.status(401).json({ message: "Unauthorized! No token provided." });
+            return res.redirect('/login')
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         const user = await LoginModel.findById(decoded._id).select('-password -__v'); 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.redirect('/login')
         }
 
         res.render('profile', { user })
@@ -32,14 +32,14 @@ async function handleUserUpdate(req, res) {
     try {
         const token = req.cookies?.vToken;
         if (!token) {
-            return res.status(401).json({ message: "Unauthorized! No token provided." });
+            return res.redirect('/login')
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         const user = await LoginModel.findById(decoded._id).select('-password -__v'); 
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.redirect('/login')
         }
 
         const { name, address, email, password } = req.body;
