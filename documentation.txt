@@ -3,32 +3,32 @@ ROUTES:
     /:
         /home:
             (before):-
-                -display candidates in the election
+                -display candidates in the election ✔️
             (after):-
                 -display display candidates with the voting lead and the winner of the election
         
         /signup:
             (before):
-                -display signup page
+                -display signup page ✔️
             (after):
-                -lands to login page
+                -lands to login page ✔️
         
         /login:
             (before):-
-                -display login page
+                -display login page ✔️
             (after):-
-                -lands to profile page
+                -lands to profile page ✔️
 
         
     /user:
         /profile:
             (before):-
-                -display profile page
-                - needs to update the profile
+                -display profile page ✔️
+                - needs to update the profile ✔️
                 - user/voters before verification of voting eligibility
-                - see candidates
+                - see candidates 
                 features:
-                    - view candidates and verify profile button
+                    - view candidates and verify profile button ✔️
                     - get mobile number verification
             (after):-
                 - user API changed to voter API
@@ -44,7 +44,7 @@ ROUTES:
                 - becomes eligible to vote
                 - becomes eligible to form party or join any party as a candidate if AGE > 25
                 features:
-                    - fight election button
+                    - fight election button 
                     - join party button to request party leader
                     - view candidates button
                     - poll vote

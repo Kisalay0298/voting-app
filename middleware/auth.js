@@ -1,21 +1,33 @@
 const jwt = require('jsonwebtoken')
+const voterModel = require('../model/voter')
 const { getVoter } = require('../services/auth');
-async function restrictToLoginUserOnly(req, res, next){
-    const token = req.cookies.vToken;
 
-    if(!token){
-        return res.redirect('/login');
-    }
+
+async function restrictToLoginUserOnly(req, res, next) {
     
+
     try {
+        const token = req.cookies.vToken;
+
+        if (!token) {
+            return res.redirect('/login');
+        }
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        const voter = await getVoter(decoded.id);
-        req.voter = voter;
+        const user = await voterModel.findById(decoded._id)
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        req.user = user;
+        
         next();
-    } catch (error) {
+    } 
+    catch (error) {
         return res.status(401).json({ message: "Unauthorized user!" });
     }
 }
+
 
 
 async function restrictToAdminOnly(req, res, next){

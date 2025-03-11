@@ -1,4 +1,5 @@
 const voterModel = require('../model/voter')
+const candidateModel = require('../model/candidate')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const cookie = require('cookie-parser')
@@ -51,6 +52,7 @@ const handleUserLogin = async (req, res)=>{
         }
         
         const passwordMatched = await bcrypt.compare(password, findUser.password)
+        console.log(passwordMatched)
         if(!passwordMatched){
             return res.status(400).json({message: "Invalid password."})
         }
@@ -81,9 +83,26 @@ const loginLogic = (req, res)=>{
 
 
 
+const homePageEnterAnyUser = async (req, res) => {
+    try {
+
+        const candidates = await candidateModel.find({})
+        const voter = await voterModel.find({})
+        res.render('candidates', {candidates, voter})
+        
+    } catch (error) {
+        console.error('Error:', err);
+        return res.redirect('/login?error=ServerError');
+    }
+}
+
+
+
+
 module.exports = {
     handleUserSignup,
     handleUserLogin,
     signupLogic,
-    loginLogic
+    loginLogic,
+    homePageEnterAnyUser
 }

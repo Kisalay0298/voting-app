@@ -63,5 +63,5 @@ const partySchema = new mongoose.Schema({
     }
 });
 
-
-module.exports = mongoose.model('Party', partySchema);
+const party = mongoose.model('Party', partySchema);
+module.exports = party

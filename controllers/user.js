@@ -7,13 +7,7 @@ connectCloudinary();
 // get user profile
 async function handleUserGetData(req, res) {
     try {
-        const token = req.cookies?.vToken;
-
-        if (!token) {
-            return res.redirect('/login')
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const decoded = req.user._id
         const user = await LoginModel.findById(decoded._id).select('-password -__v'); 
         if (!user) {
             return res.redirect('/login')
@@ -30,20 +24,16 @@ async function handleUserGetData(req, res) {
 
 async function handleUserUpdate(req, res) {
     try {
-        const token = req.cookies?.vToken;
-        if (!token) {
-            return res.redirect('/login')
-        }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        const user = await LoginModel.findById(decoded._id).select('-password -__v'); 
+        const decoded = req.user.id
+        const user = await LoginModel.findById(decoded).select('-password -hasVoted -__v'); 
 
         if (!user) {
             return res.redirect('/login')
         }
 
         const { name, address, email, password } = req.body;
-        const imageFile = req.file;  // Get uploaded file
+        const imageFile = req.file;
 
         if (name) user.name = name;
         if (address) user.address = address;

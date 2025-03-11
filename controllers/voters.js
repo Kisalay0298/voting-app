@@ -1,6 +1,7 @@
 const voterModel = require('../model/voter')
 const jwt = require('jsonwebtoken')
 const partyModel = require('../model/party')
+const candidateModel = require('../model/candidate')
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
 // vote
@@ -11,9 +12,8 @@ connectCloudinary();
 // form new party
 const applyForNewParty = async (req, res) => {
     try {
-        const token = req.cookies.vToken;
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        const voterId = decoded._id;
+
+        const voterId = req.user._id;
 
         const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted -role -isVerified');
         
@@ -59,10 +59,53 @@ const applyForNewParty = async (req, res) => {
 };
 
 
+// apply for new candidate
+const applyForCandidate = async (req, res)=>{
+    try {
+
+        const voterId = req.user._id;
+        const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted')
+        const {partyName} = req.body
+        const party = await partyModel.findOne({name: partyName}).select('-leader -formedBy -members -totalVotes -status -result -electionYear -createdAt')
+
+        const newCandidate = new candidateModel( {
+            voterId: voter._id,
+            partyId: party._id,
+            candidate: voter,
+            party: party,
+        })
+
+        await newCandidate.save()
+        res.json({ message: `Candidate added successfully int the party ${partyName}`});
+        
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
+    }
+}
+
+
+const getApplyForCandidate = async (req, res) => {
+    try {
+        const user = req.user._id;  // ✅ Now uses the authenticated user
+        const userApplying = await voterModel.findById(user);
+        
+        res.render("requestForCandidate", { userApplying });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+
+
 // can view results after election result
 
 
 
 module.exports={
     applyForNewParty,
+    applyForCandidate,
+    getApplyForCandidate
 }

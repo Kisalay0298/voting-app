@@ -26,7 +26,6 @@ const candidateSchema = new mongoose.Schema({
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'voter',
-            required: true,
             unique: true
         },
         votedAt: {
