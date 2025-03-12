@@ -69,19 +69,23 @@
             display: inline-block;
         }
 
+        .dropdown-btn a {
+            text-decoration: none;
+            /* color: black; */
+            /* font-weight: bold; */
+            padding: 10px;
+            display: block;
+            cursor: pointer;
+        }
+
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 100%;
-            left: 0;
             background: white;
-            min-width: 160px;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
+            min-width: 180px;
+            z-index: 100;
         }
 
         .dropdown-content a {
@@ -89,12 +93,13 @@
             padding: 10px;
             text-decoration: none;
             color: black;
+            border-bottom: 1px solid #ddd;
         }
 
         .dropdown-content a:hover {
-            background: #007bff;
-            color: white;
+            background: #f4f4f4;
         }
+
 
         /* Notification Icon & Box */
         .notification-container {
@@ -124,7 +129,7 @@
             display: none;
             position: absolute;
             top: 50px;
-            right: 0;
+            right: -60PX;
             width: 300px;
             max-height: 400px;
             background: white;
@@ -257,6 +262,46 @@
             gap: 15px;
         }
 
+        .profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 62px;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 180px;
+            z-index: 100;
+        }
+
+        .profile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-menu ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .profile-menu ul li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+            font-size: 14px;
+        }
+
+        .profile-menu ul li:hover {
+            background: #f4f4f4;
+            cursor: pointer;
+        }
 
 
     </style>
@@ -268,20 +313,23 @@
         <div class="logo">Voting System</div>
         <div class="nav-links">
             <a href="/">Home</a>
+            
+            <!-- Dropdown Menu -->
             <div class="dropdown">
-                <div class="" id="drop">
+                <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
                     <a href="#">Election ▼</a>
-                    <div class="dropdown-content">
-                        <a href="/contest-election">Contest Election</a>
-                        <a href="/view-analysis">View Analysis</a>
-                        <a href="/view-result">View Result</a>
-                        <a href="/publish-result">Publish Result</a>
-                    </div>
+                </div>
+                <div class="dropdown-content" id="dropdownContent">
+                    <a href="/contest-election">Contest Election</a>
+                    <a href="/view-analysis">View Analysis</a>
+                    <a href="/view-result">View Result</a>
+                    <a href="/publish-result">Publish Result</a>
                 </div>
             </div>
+
             <a href="/about">About</a>
             <a href="/contact">Contact</a>
-            
+
             <div class="notification-container">
                 <div class="notification-bell" onclick="toggleNotifications()">
                     🔔 <span id="notificationCount" class="notification-badge">0</span>
@@ -293,9 +341,23 @@
                     </ul>
                 </div>
             </div>
-            
     
-            <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic">
+            <!-- <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic"> -->
+            <div class="profile-container">
+                <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic" onclick="toggleProfileMenu()">
+                
+                <!-- Dropdown Menu -->
+                <div class="profile-menu" id="profileMenu">
+                    <ul>
+                        <li><a href="/profile">👤 View Profile</a></li>
+                        <li><a href="/verify">✔️ Verify Account</a></li>
+                        <li><a href="/contest">🏆 Contest Election</a></li>
+                        <li><a href="/party">🏛️ Form New Party</a></li>
+                        <li><a href="/vote">🗳️ Vote</a></li>
+                        <li><a href="/logout">🚪 Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -400,6 +462,35 @@
         // Automatically refresh notifications every 5 seconds
         // setInterval(fetchNotifications, 300000);
 
+        function toggleProfileMenu() {
+            const menu = document.getElementById("profileMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener("click", function (event) {
+            const menu = document.getElementById("profileMenu");
+            const profilePic = document.querySelector(".profile-pic");
+
+            if (menu && !menu.contains(event.target) && event.target !== profilePic) {
+                menu.style.display = "none";
+            }
+        });
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById("dropdownContent");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            const dropdown = document.getElementById("dropdownContent");
+            const dropBtn = document.getElementById("drop");
+
+            if (dropdown && !dropdown.contains(event.target) && !dropBtn.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
 
 
 
