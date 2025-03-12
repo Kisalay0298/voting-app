@@ -5,16 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voter ID Card</title>
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(to right, #4facfe, #00f2fe);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
+        }
+
+        .navbar .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown-content a:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Notification Icon & Box */
+        .notification-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification {
+            font-size: 20px;
+            position: relative;
+        }
+
+        .notification::after {
+            content: "3";
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 7px;
+            border-radius: 50%;
+        }
+
+        .notification-box {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 300px;
+            max-height: 400px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .notification-badge {
+            position: absolute;
+            top: 5px; /* Adjust if needed */
+            right: -2px; /* Moves the badge 2px to the right */
+            background-color: red;
+            color: white;
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none; /* Initially hidden */
+        }
+
+
+        .notification-box h4 {
+            margin: 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .notification-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-box li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .notification-box li:hover {
+            background-color: #f7f7f7;
+        }
+
+        /* Profile Picture */
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #007bff;
         }
 
         /* Card Styling */
@@ -30,6 +193,7 @@
             width: 350px;
             text-align: center;
             border: 2px solid rgba(0, 0, 0, 0.2);
+            margin-top: 80px;
         }
 
         .profile-img {
@@ -41,19 +205,11 @@
             margin-bottom: 15px;
         }
 
-        h2 {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
         /* Info Box */
         .info {
             font-size: 16px;
             color: #222;
             margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
             width: 100%;
             padding: 8px 15px;
             background: rgba(0, 0, 0, 0.1);
@@ -94,14 +250,56 @@
             background: #0056b3;
         }
 
+        /* Alignment */
         .alignmentClass {
-        display: flex;
-        justify-content: center; /* Centers buttons */
-        gap: 15px; /* Adds spacing */
-    }
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+
+
     </style>
 </head>
 <body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Voting System</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <div class="dropdown">
+                <div class="" id="drop">
+                    <a href="#">Election ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/contest-election">Contest Election</a>
+                        <a href="/view-analysis">View Analysis</a>
+                        <a href="/view-result">View Result</a>
+                        <a href="/publish-result">Publish Result</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            
+            <div class="notification-container">
+                <div class="notification-bell" onclick="toggleNotifications()">
+                    🔔 <span id="notificationCount" class="notification-badge">0</span>
+                </div>
+                <div class="notification-box" id="notificationBox">
+                    <h4>Notifications</h4>
+                    <ul id="notificationList">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+            </div>
+            
+    
+            <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic">
+        </div>
+    </div>
+
+    <!-- Voter ID Card -->
     <div class="card">
         <img src="<%= user.image || '/images/login.png' %>" alt="Voter Photo" class="profile-img">
         <h2>Voter ID Card</h2>
@@ -111,39 +309,104 @@
         <p class="info"><span class="label">Mob. No:</span> <%= user.phone %></p>
         <p class="info"><span class="label">Aadhar ID:</span> <%= user.aadharId %></p>
         <p class="info"><span class="label">Address:</span> <%= user.address %></p>
-        <!-- <p class="info"><span class="label">Voted:</span> <%= user.hasVoted ? "Yes" : "No" %></p> -->
-
-        <!-- QR Code Placeholder -->
         <img src="<%= user.qrCode %>" alt="QR Code" class="qr-code">
-
-        <div class="alignmentClass">
-
-            <button class="button" onclick="window.location.href='/voter/profile-update'">Candidates</button>
-
-            <% if (!user.isVerified) { %>
-
-                <button class="button" onclick="window.location.href='/voter/profile-verify'">Verify</button>
-                
-            <% } else {%>
-
-                <button class="button" onclick="window.location.href='/user'">View Voters</button>
-                <!-- Add admin actions section -->
-                <% if (user.role === 'admin') { %>
-                    <button class="button" onclick="window.location.href='/admin/adminPanel'">Admin Panel</button>
-                <% } else { %>
-                    <% if (user.age >= 18) { %>
-                        <% if (user.hasVoted) { %>
-                            <button class="button" onclick="window.location.href='/user/viewAllCandidates'">View Candidates</button>
-                        <% } else { %>
-                            <button class="button" onclick="window.location.href='/voters/vote'">Vote</button>
-                        <% } %>
-                    <% } else { %>
-                        <button class="button" onclick="window.location.href='/user/viewAllCandidates'">View Candidates</button>
-                    <% } %>
-                <% } %>
-            <% } %>
-        </div>
-        
     </div>
+
+
+    <script>
+        function toggleNotifications() {
+            const box = document.getElementById('notificationBox');
+            const isVisible = box.style.display === 'block';
+    
+            if (!isVisible) {
+                box.style.display = 'block';
+                fetchNotifications();
+                document.addEventListener('click', closeOnClickOutside); // Add event listener
+            } else {
+                box.style.display = 'none';
+                document.removeEventListener('click', closeOnClickOutside); // Remove event listener
+            }
+        }
+    
+        function closeOnClickOutside(event) {
+            const box = document.getElementById('notificationBox');
+            const bell = document.querySelector('.notification-bell');
+    
+            if (!box.contains(event.target) && !bell.contains(event.target)) {
+                box.style.display = 'none';
+                document.removeEventListener('click', closeOnClickOutside); // Cleanup event listener
+            }
+        }
+
+        // async function fetchNotifications() {
+        //     try {
+        //         const response = await fetch('/notifications');
+        //         const notifications = await response.json();
+                
+        //         const notificationList = document.getElementById('notificationList');
+        //         const notificationCount = document.getElementById('notificationCount'); // Get badge element
+
+        //         notificationList.innerHTML = ''; // Clear existing list
+
+        //         if (notifications.length === 0) {
+        //             notificationList.innerHTML = '<li>No new notifications</li>';
+        //             notificationCount.style.display = 'none'; // Hide badge if no notifications
+        //         } else {
+        //             notifications.forEach(notification => {
+        //                 const li = document.createElement('li');
+        //                 li.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
+        //                 notificationList.appendChild(li);
+        //             });
+
+        //             // Show the count badge and update it
+        //             notificationCount.textContent = notifications.length;
+        //             notificationCount.style.display = 'inline'; 
+        //         }
+        //     } catch (error) {
+        //         console.error("Error fetching notifications:", error);
+        //         notificationList.innerHTML = '<li>Error loading notifications</li>';
+        //     }
+        // }
+        async function fetchNotifications() {
+            try {
+                const response = await fetch('/notifications');
+                const notifications = await response.json();
+                const notificationList = document.getElementById('notificationList');
+
+                notificationList.innerHTML = ''; // Clear existing list
+
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = '<li>No new notifications</li>';
+                } else {
+                    notifications.forEach(notification => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
+                        notificationList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+                notificationList.innerHTML = '<li>Error loading notifications</li>';
+            }
+        }
+
+        // Fetch notifications immediately when the page loads
+        fetchNotifications();
+
+        // Set interval to fetch notifications every 5 minutes (300,000 ms)
+        setInterval(fetchNotifications, 300000);
+
+
+        // Automatically refresh notifications every 5 seconds
+        // setInterval(fetchNotifications, 300000);
+
+
+
+
+    </script>
+    
+    
+
 </body>
+
 </html>

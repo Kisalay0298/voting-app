@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter ID Card</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Card Styling */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 350px;
+            text-align: center;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #007bff;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Info Box */
+        .info {
+            font-size: 16px;
+            color: #222;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .label {
+            color: #555;
+        }
+
+        /* QR Code */
+        .qr-code {
+            width: 80px;
+            height: 80px;
+            margin-top: 10px;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        /* Buttons */
+        .button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+            transition: 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background: #0056b3;
+        }
+
+        .alignmentClass {
+        display: flex;
+        justify-content: center; /* Centers buttons */
+        gap: 15px; /* Adds spacing */
+    }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="<%= user.image || '/images/login.png' %>" alt="Voter Photo" class="profile-img">
+        <h2>Voter ID Card</h2>
+        <p class="info"><span class="label">Name:</span> <%= user.name %></p>
+        <p class="info"><span class="label">Age:</span> <%= user.age %></p>
+        <p class="info"><span class="label">Gender:</span> <%= user.gender %></p>
+        <p class="info"><span class="label">Mob. No:</span> <%= user.phone %></p>
+        <p class="info"><span class="label">Aadhar ID:</span> <%= user.aadharId %></p>
+        <p class="info"><span class="label">Address:</span> <%= user.address %></p>
+        <!-- <p class="info"><span class="label">Voted:</span> <%= user.hasVoted ? "Yes" : "No" %></p> -->
+
+        <!-- QR Code Placeholder -->
+        <img src="<%= user.qrCode %>" alt="QR Code" class="qr-code">
+
+        <div class="alignmentClass">
+
+            <button class="button" onclick="window.location.href='/voter/profile-update'">Candidates</button>
+
+            <% if (!user.isVerified) { %>
+
+                <button class="button" onclick="window.location.href='/voter/profile-verify'">Verify</button>
+                
+            <% } else {%>
+
+                <button class="button" onclick="window.location.href='/user'">View Voters</button>
+                <!-- Add admin actions section -->
+                <% if (user.role === 'admin') { %>
+                    <button class="button" onclick="window.location.href='/admin/adminPanel'">Admin Panel</button>
+                <% } else { %>
+                    <% if (user.age >= 18) { %>
+                        <% if (user.hasVoted) { %>
+                            <button class="button" onclick="window.location.href='/user/viewAllCandidates'">View Candidates</button>
+                        <% } else { %>
+                            <button class="button" onclick="window.location.href='/voters/vote'">Vote</button>
+                        <% } %>
+                    <% } else { %>
+                        <button class="button" onclick="window.location.href='/user/viewAllCandidates'">View Candidates</button>
+                    <% } %>
+                <% } %>
+            <% } %>
+        </div>
+        
+    </div>
+</body>
+</html>

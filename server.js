@@ -6,6 +6,7 @@ const user = require('./routes/user')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 require('dotenv').config();
+const notificationRoutes = require('./routes/notifications')
 
 
 app.use(express.json());
@@ -21,6 +22,8 @@ app.set('views', path.resolve('./views'))
 app.use('/', login)
 app.use('/voter', voters)
 app.use('/user', user)
+app.use('/',notificationRoutes);
+
 
 // app.get('/',(req, res)=>{
 //     res.send('Hello World!')
