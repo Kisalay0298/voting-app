@@ -3,115 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vote</title>
+    <title>Vote for a Candidate</title>
     <style>
-        /* General Styles */
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Poppins', sans-serif;
+        }
+
+        body {
             background: linear-gradient(to right, #4facfe, #00f2fe);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Voting Card */
         .container {
             background: white;
-            width: 380px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
             text-align: center;
-            transition: 0.3s ease-in-out;
         }
 
-        .container:hover {
-            transform: scale(1.02);
-        }
-
-        h2 {
-            margin-bottom: 20px;
+        h1 {
             color: #333;
+            margin-bottom: 15px;
         }
 
-        /* Form Elements */
-        select, input {
+        table {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
             border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-            box-sizing: border-box;
+            overflow: hidden;
         }
 
-        select:focus, input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-
-        button {
-            width: 100%;
-            margin: 10px 0;
+        th, td {
+            border: 1px solid #ddd;
             padding: 12px;
+            text-align: center;
+        }
+
+        th {
             background: #007bff;
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
             font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
         }
 
-        button:hover {
-            background: #0056b3;
-            transform: scale(1.05);
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            margin: 5px;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        .selectable-row {
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .selectable-row:hover {
+            background-color: #f1f1f1;
+        }
+
+        .selected-row {
+            background-color: #cce5ff !important;
         }
     </style>
 </head>
 <body>
+    <%- include('partials/navbar') %>
     <div class="container">
-        <h2>🗳️ Vote for Your Candidate</h2>
-
-        <% if (voter.hasVoted) { %>
-            <div class="alert alert-warning">
-                <h2>You have already voted!</h2>
-                <p>You cannot vote again.</p>
-                <a href="/user/profile/<%= voter._id %>" class="button">Back to Profile</a>
-            </div>
-        <% } else { %>
-            <!-- Your voting form here -->
-            <form id="voteForm" action="/voters/vote" method="POST">
-                <select name="candidateId" required>
-                    <% candidates.forEach(candidate => { %>
-                        <option value="<%= candidate._id %>">
-                            <%= candidate.name %> - <%= candidate.party %>
-                        </option>
-                    <% }); %>
-                </select>
-                <input type="password" name="password" required placeholder="Enter your password to confirm">
-                <button type="submit">Submit Vote</button>
-            </form>
-        <% } %>
+        <h1>Vote for Your Candidate</h1>
+        <form action="/voter/submit-vote" method="post">
+            <% if (candidates.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Name</th>
+                            <th>Party</th>
+                            <th>Party Logo</th>
+                            <th>Vote</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% candidates.forEach((cnd, index) => { %>
+                            <tr class="selectable-row" onclick="selectCandidate(<%= index %>)">
+                                <td>
+                                    <img src="<%= cnd.candidate.image %>" alt="Candidate Image" width="50px" height="50px" style="border-radius: 50%;">
+                                </td>
+                                <td><%= cnd.candidate.name %></td>
+                                <td><%= cnd.party.name %></td>
+                                <td>
+                                    <img src="<%= cnd.party.symbol %>" alt="Party Image" width="50px" height="50px" style="border-radius: 50%;">
+                                </td>
+                                <!-- <td>
+                                    <input type="radio" name="selectedCandidate" value="<%= cnd.candidate._id %>" id="candidate_<%= index %>" required>
+                                </td> -->
+                                <td>
+                                    <input type="radio" name="selectedCandidate" value="<%= cnd.candidate._id %>" id="candidate_<%= index %>" required>
+                                </td>
+                                
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <div class="button-container">
+                    <button type="submit" class="button">Submit Vote</button>
+                </div>
+            <% } else { %>
+                <p>No candidates available</p>
+            <% } %>
+        </form>
     </div>
 
+
     <script>
-        function confirmVote() {
-            return confirm("Are you sure you want to submit your vote? This action cannot be undone.");
+        function selectCandidate(index) {
+            // Remove the selected-row class from all rows
+            document.querySelectorAll('.selectable-row').forEach(row => row.classList.remove('selected-row'));
+
+            // Add the selected-row class to the clicked row
+            document.querySelectorAll('.selectable-row')[index].classList.add('selected-row');
+
+            // Select the corresponding radio button
+            document.getElementById(`candidate_${index}`).checked = true;
+            
         }
-        document.getElementById('voteForm')?.addEventListener('submit', function(e) {
-        if (<%= voter.hasVoted %>) {
-            e.preventDefault();
-            alert('You have already voted!');
-            window.location.href = '/user/profile/<%= voter._id %>';
-            return false;
-        }
-    });
     </script>
+    
 </body>
 </html>

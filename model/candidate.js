@@ -45,13 +45,13 @@ const mongoose = require('mongoose');
 
 const candidateSchema = new mongoose.Schema({
     voterId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'voters',
         required: true,
         unique: true
     },
     partyId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'parties',
         required: true
     },
@@ -65,7 +65,7 @@ const candidateSchema = new mongoose.Schema({
     },
     votes: [{
         user: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'voter',
             unique: true
         },
@@ -80,7 +80,7 @@ const candidateSchema = new mongoose.Schema({
     },
     switchHistory: [{
         previousPartyId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'parties'
         },
         previousPartyName: {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { restrictToLoginUserOnly } = require('../middleware/auth')
-const { applyForNewParty, getApplyForNewParty, applyForCandidate, getApplyForCandidate } = require('../controllers/voters')
+const { applyForNewParty, getApplyForNewParty, applyForCandidate, getApplyForCandidate, getCandidateToVote, candidateToVote } = require('../controllers/voters')
 const { handleUserGetData, handleUserUpdate, handleUserGetUpdate, } = require('../controllers/user')
 const { homePageEnterAnyUser } = require('../controllers/signup')
 const upload = require('../middleware/multer')
@@ -9,8 +9,9 @@ const upload = require('../middleware/multer')
 
 
 
-
-
+// poll vote
+router.get('/vote', restrictToLoginUserOnly, getCandidateToVote)
+router.post('/submit-vote', restrictToLoginUserOnly, candidateToVote)
 
 
 // view candidates

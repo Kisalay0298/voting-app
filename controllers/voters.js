@@ -4,10 +4,69 @@ const partyModel = require('../model/party')
 const candidateModel = require('../model/candidate')
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
-// vote
+const axios = require('axios');
+const mongoose = require("mongoose");
 
-// can see candidates
 
+
+
+
+const candidateToVote = async (req, res) => {
+    try {
+        const candidateId = req.body.selectedCandidate;
+        const userId = req.user._id;
+        
+        console.log("candidateId1:", candidateId);
+        console.log("Type of candidateId:", typeof candidateId);
+
+        // Fetch voter and check if they have already voted
+        const voter = await voterModel.findById(userId);
+        if (!voter) return res.status(404).json({ message: "Voter not found" });
+        if (voter.hasVoted) return res.status(400).json({ message: "You have already voted." });
+
+        // Update voter's status
+        voter.hasVoted = true;
+
+        // Fetch candidate
+            const cd = await candidateModel.findOne({voterId: candidateId});
+            if (!cd) {
+                console.error("Candidate not found");
+                return res.status(404).json({ error: "Candidate not found" });
+            }
+
+        // Push vote to array
+        cd.votes.push({ user: userId, votedAt: new Date() });
+
+        // Increase vote count
+        cd.voteCount += 1;
+
+        // Save updated candidate document
+        await cd.save();
+        await voter.save(); // Save voter's vote status
+
+        console.log("Vote recorded successfully:", cd);
+        res.redirect('/voter/home');
+
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message });
+    }
+};
+
+
+
+
+
+const getCandidateToVote = async(req, res)=>{
+    try {
+        // const { candidateId } = req.params;
+        const candidates = await candidateModel.find();
+
+        res.render('vote', { candidates, user: req.user });
+    } catch (error) {
+        res.status(500).send('Error loading candidates');
+    }
+}
 
 // Form new party
 const applyForNewParty = async (req, res) => {
@@ -78,42 +137,6 @@ const applyForNewParty = async (req, res) => {
 
 
 
-
-// apply for new candidate
-// const applyForCandidate = async (req, res)=>{
-//     try {
-
-//         const voterId = req.user._id;
-//         const alreadyCandidate = await candidateModel.findOne({voterId})
-//         if(alreadyCandidate){
-//             await candidateModel.deleteOne({ _id: alreadyCandidate._id })
-//         }
-//         const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted')
-//         const {partyName} = req.body
-//         const party = await partyModel.findOne({name: partyName}).select('-leader -__v -formedBy -members -totalVotes -status -result -electionYear -createdAt')
-//         console.log("party: ",party._id)
-        
-//         const newCandidate = new candidateModel( {
-//             voterId: voter._id,
-//             partyId: party._id,
-//             candidate: voter,
-//             party: party,
-//         })
-        
-//         const updated = await newCandidate.save()
-//         if(updated){
-//             res.redirect('profile')
-//         }else{
-//             res.redirect('/apply-for-candidate')
-//         }
-        
-//     } catch (err) {
-//         console.error('Error:', err);
-//         res.status(500).json({ message: "Internal Server Error", error: err.message });
-//     }
-// }
-const axios = require('axios'); // Import axios
-
 const applyForCandidate = async (req, res) => {
     try {
         const voterId = req.user._id;
@@ -182,22 +205,6 @@ const getApplyForCandidate = async (req, res) => {
 
 
 
-// const getApplyForNewParty = async (req, res)=>{
-//     try {
-
-//         const decoded = req.user._id
-//         const user = await voterModel.findById(decoded._id).select('-password -__v'); 
-//         if (!user) {
-//             return res.redirect('/login')
-//         }
-
-//         res.render('create-party', { user, error: null });
-        
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).json({ message: "Internal Server Error", error: error.message });
-//     }
-// }
 const getApplyForNewParty = async (req, res)=> {
     try {
         if (!req.user) {
@@ -223,5 +230,7 @@ module.exports={
     applyForNewParty,
     applyForCandidate,
     getApplyForCandidate,
-    getApplyForNewParty
+    getApplyForNewParty,
+    candidateToVote,
+    getCandidateToVote,
 }
