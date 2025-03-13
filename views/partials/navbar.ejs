@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voter ID Card</title>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
     <style>
         * {
             margin: 0;
@@ -312,19 +317,58 @@
 <body>
 
     <!-- Navbar -->
-    <%- include('partials/navbar') %>
+    <div class="navbar">
+        <div class="logo">Voting System</div>
+        <div class="nav-links">
+            <a href="/voter/home">Home</a>
+            
+            <!-- Dropdown Menu -->
+            <div class="dropdown">
+                <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
+                    <a href="#">Election ▼</a>
+                </div>
+                <div class="dropdown-content" id="dropdownContent">
+                    <a href="/contest-election">🏆 Contest Election</a>
+                    <a href="/view-analysis">📊 View Analysis</a>
+                    <a href="/view-result">📜 View Result</a>
+                    <a href="/publish-result">📢 Publish Result</a>
+                </div>
+            </div>
+            
+            
 
-    <!-- Voter ID Card -->
-    <div class="card">
-        <img src="<%= user.image || '/images/login.png' %>" alt="Voter Photo" class="profile-img">
-        <h2>Voter ID Card</h2>
-        <p class="info"><span class="label">Name:</span> <%= user.name %></p>
-        <p class="info"><span class="label">Age:</span> <%= user.age %></p>
-        <p class="info"><span class="label">Gender:</span> <%= user.gender %></p>
-        <p class="info"><span class="label">Mob. No:</span> <%= user.phone %></p>
-        <p class="info"><span class="label">Aadhar ID:</span> <%= user.aadharId %></p>
-        <p class="info"><span class="label">Address:</span> <%= user.address %></p>
-        <img src="<%= user.qrCode %>" alt="QR Code" class="qr-code">
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+
+            <div class="notification-container">
+                <div class="notification-bell" onclick="toggleNotifications()">
+                    🔔 <span id="notificationCount" class="notification-badge">0</span>
+                </div>
+                <div class="notification-box" id="notificationBox">
+                    <h4>Notifications</h4>
+                    <ul id="notificationList">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic"> -->
+            <div class="profile-container">
+                <img src="<%= user.image || '/images/default-profile.png' %>" alt="Profile" class="profile-pic" onclick="toggleProfileMenu()">
+                
+                <!-- Dropdown Menu -->
+                <div class="profile-menu" id="profileMenu">
+                    <ul>
+                        <li><a href="/voter/profile">👤 View Profile</a></li>
+                        <li><a href="/verify">✔️ Verify Account</a></li>
+                        <li><a href="/contest">🏆 Contest Election</a></li>
+                        <li><a href="/voter/create-party">🏛️ Form New Party</a></li>
+                        <li><a href="/voter/apply-for-candidate">🤝 Join Party</a></li>
+                        <li><a href="/voter/logout">🚪 Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -353,35 +397,6 @@
             }
         }
 
-        // async function fetchNotifications() {
-        //     try {
-        //         const response = await fetch('/notifications');
-        //         const notifications = await response.json();
-                
-        //         const notificationList = document.getElementById('notificationList');
-        //         const notificationCount = document.getElementById('notificationCount'); // Get badge element
-
-        //         notificationList.innerHTML = ''; // Clear existing list
-
-        //         if (notifications.length === 0) {
-        //             notificationList.innerHTML = '<li>No new notifications</li>';
-        //             notificationCount.style.display = 'none'; // Hide badge if no notifications
-        //         } else {
-        //             notifications.forEach(notification => {
-        //                 const li = document.createElement('li');
-        //                 li.innerHTML = <strong>${notification.from.name}:</strong> ${notification.message};
-        //                 notificationList.appendChild(li);
-        //             });
-
-        //             // Show the count badge and update it
-        //             notificationCount.textContent = notifications.length;
-        //             notificationCount.style.display = 'inline'; 
-        //         }
-        //     } catch (error) {
-        //         console.error("Error fetching notifications:", error);
-        //         notificationList.innerHTML = '<li>Error loading notifications</li>';
-        //     }
-        // }
         async function fetchNotifications() {
             try {
                 const response = await fetch('/notifications');
@@ -395,7 +410,27 @@
                 } else {
                     notifications.forEach(notification => {
                         const li = document.createElement('li');
-                        li.innerHTML = <strong>${notification.from.name}:</strong> ${notification.message};
+                        li.style.display = "flex"; 
+                        li.style.alignItems = "center"; 
+                        li.style.padding = "10px";
+                        li.style.borderBottom = "1px solid #ddd"; // Optional: Adds a separator
+
+                        // Create profile image element
+                        const img = document.createElement('img');
+                        img.src = notification.from.image || 'default-avatar.png'; // Default image fallback
+                        img.alt = "Profile";
+                        img.style.width = "40px"; 
+                        img.style.height = "40px";
+                        img.style.borderRadius = "50%"; // Makes it rounded
+                        img.style.marginRight = "10px";
+
+                        // Create text container
+                        const textDiv = document.createElement('div');
+                        textDiv.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
+
+                        // Append elements
+                        li.appendChild(img);
+                        li.appendChild(textDiv);
                         notificationList.appendChild(li);
                     });
                 }
@@ -404,6 +439,7 @@
                 notificationList.innerHTML = '<li>Error loading notifications</li>';
             }
         }
+
 
         // Fetch notifications immediately when the page loads
         fetchNotifications();

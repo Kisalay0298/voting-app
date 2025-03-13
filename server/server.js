@@ -5,7 +5,7 @@ const app = express()
 
 async function startServer(){
     await connectToDB();
-    const port = 2231;
+    const port = process.env.LOCALPORT;
     app.listen(port, ()=>{
         console.log(`Server is running on http://localhost:${port}`)
     })

@@ -64,7 +64,7 @@ const handleUserLogin = async (req, res)=>{
             // {httpOnly: true, secure: true, maxAge: 10 * 60 * 1000}
         )
 
-        return res.redirect('/voter/profile');
+        return res.redirect('/voter/home');
         
     } catch (err) {
         console.error('Error:', err);
@@ -86,9 +86,11 @@ const loginLogic = (req, res)=>{
 const homePageEnterAnyUser = async (req, res) => {
     try {
 
-        const candidates = await candidateModel.find({})
-        const voter = await voterModel.find({})
-        res.render('candidates', {candidates, voter})
+        const candidates = await candidateModel.find({});
+        const voter = await voterModel.find({});
+        const user = req.user;  // Assuming user info is stored in `req.user` after authentication
+
+        res.render('candidates', { candidates, voter, user });
         
     } catch (error) {
         console.error('Error:', err);

@@ -2,7 +2,7 @@ const LoginModel = require('../model/voter')
 const jwt = require('jsonwebtoken');
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
-
+const candidateModel = require('../model/candidate')
 
 // get user profile
 async function handleUserGetData(req, res) {
@@ -13,7 +13,10 @@ async function handleUserGetData(req, res) {
             return res.redirect('/login')
         }
 
-        res.render('profile', { user })
+        const candidates = await candidateModel.find({});
+        const voter = await LoginModel.find({});
+
+        res.render('profile', { user,  candidates, voter })
 
     } catch (err) {
         console.error('Error:', err);

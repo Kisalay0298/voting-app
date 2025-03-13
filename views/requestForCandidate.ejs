@@ -3,20 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Join a Party</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            width: 380px;
+            text-align: center;
+        }
+
+        /* Heading */
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 22px;
+        }
+
+        /* Radio Group Styling */
+        .radio-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .radio-group label:hover {
+            background: #e6f0ff;
+        }
+
+        .radio-group input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .party-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .party-symbol {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+        .party-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Navbar -->
+    <%- include('partials/navbar') %>
+
+    <!-- Form Container -->
     <div class="form-container">
-        <h2>Signup</h2>
+        <h2>Join New Party</h2>
         <form action="/voter/apply-for-candidate" method="post">
-            <input type="text" name="partyName" placeholder="Enter party name" required />
-            <button type="submit">submit</button>
+            <div class="radio-group" id="partyList">
+                <!-- Dynamic Party Options Will Be Loaded Here -->
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
         </form>
-    
-        <!-- Navigation Buttons -->
-        <!-- <div class="button-group">
-            <button class="btn btn-secondary" onclick="window.location.href='/voter/apply-for-candidate'">submit</button>
-        </div> -->
     </div>
+
+    <script>
+        async function fetchParties() {
+            try {
+                const response = await fetch('/api/parties');
+                const result = await response.json();
+                const partyList = document.getElementById('partyList');
+    
+                partyList.innerHTML = ''; // Clear previous list
+    
+                if (!result.success || result.data.length === 0) {
+                    partyList.innerHTML = '<p>No parties available</p>';
+                    return;
+                }
+    
+                result.data.forEach(party => {
+                    const label = document.createElement('label');
+                    label.innerHTML = `
+                        <input type="radio" name="partyName" value="${party.name}" required>
+                        <div class="party-info">
+                            <img src="${party.symbol}" alt="${party.name} Symbol" class="party-symbol">
+                            <span class="party-name">${party.name}</span>
+                        </div>
+                    `;
+                    partyList.appendChild(label);
+                });
+            } catch (error) {
+                console.error("Error fetching parties:", error);
+                document.getElementById('partyList').innerHTML = '<p>Error loading parties</p>';
+            }
+        }
+    
+        // Load parties when the page loads
+        window.onload = fetchParties;
+    </script>
+
 </body>
 </html>

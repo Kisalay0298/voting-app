@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 const path = require('path')
 require('dotenv').config();
 const notificationRoutes = require('./routes/notifications')
-
+const party = require('./routes/parties')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,17 +20,15 @@ app.set('views', path.resolve('./views'))
 
 
 app.use('/', login)
+app.use('/api', party)
 app.use('/voter', voters)
 app.use('/user', user)
 app.use('/',notificationRoutes);
 
 
-// app.get('/',(req, res)=>{
-//     res.send('Hello World!')
-// })
-
-
-
+app.get('/*', (req, res)=>{
+    res.redirect('/voter/home')
+})
 
 
 startServer()
