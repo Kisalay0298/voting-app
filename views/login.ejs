@@ -5,8 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <!-- Add this inside <head> -->
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <script>
+        function showToast(message, type = "success") {
+            let bgColor = type === "success" 
+                ? "linear-gradient(to right, #28a745, #20c997)"  // Green gradient for success
+                : "linear-gradient(to right, #dc3545, #ff6b6b)"; // Red gradient for errors
+
+            Toastify({
+                text: message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: bgColor,
+                stopOnFocus: true,
+                offset: { y: 50 } // Moves toast slightly below
+            }).showToast();
+        }
+    </script>
 
     <style>
         /* Global Styles */
@@ -105,6 +124,14 @@
             background-color: #1e7e34;
         }
 
+        .custom-toast {
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            padding: 12px 20px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -143,9 +170,11 @@
                 text: message,
                 duration: 3000,
                 close: true,
-                gravity: "top",
+                gravity: "top", 
                 position: "right",
-                backgroundColor: type === "success" ? "#28a745" : "#dc3545",
+                backgroundColor: "linear-gradient(to right, #28a745, #20c997)", // Green gradient
+                className: "custom-toast",
+                stopOnFocus: true,
             }).showToast();
         }
     

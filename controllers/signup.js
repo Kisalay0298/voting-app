@@ -10,12 +10,12 @@ async function handleUserSignup(req, res) {
         const { name, phone, dob, password, gender, aadharId, confirmPassword } = req.body
 
         if(password !== confirmPassword){
-            return res.status(400).json({message: "Passwords do not match."})
+            return res.redirect('/signup?message=Passwords do not match!&type=error');
         }
 
         const existingUser = await voterModel.findOne({aadharId})
         if(existingUser){
-            return res.status(400).json({message: "Email already exists."})
+            return res.redirect('/signup?message=Aadhar ID already registered!&type=error');
         }
 
         const newUser = {
@@ -29,50 +29,46 @@ async function handleUserSignup(req, res) {
 
         await voterModel.create(newUser)
         console.log(newUser)
-        return res.redirect('/login');
+        return res.redirect('/login?message=Signup successful! Please log in.&type=success');
 
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/signup?message=Internal Server Error!&type=error')
     }
 };
 
 
-
-const handleUserLogin = async (req, res)=>{
+const handleUserLogin = async (req, res) => {
     try {
-
         const { password, loginId } = req.body;
 
         const findUser = await voterModel.findOne({
             $or: [{ aadharId: loginId }, { phone: loginId }]
         });
-        if(!findUser){
-            return res.status(400).json({message: "User not found."})
-        }
-        
-        const passwordMatched = await bcrypt.compare(password, findUser.password)
-        console.log(passwordMatched)
-        if(!passwordMatched){
-            // return res.status(400).json({message: "Invalid password."})
-            return res.redirect('/login?message=Invalid password!&type=error');
+
+        if (!findUser) {
+            return res.redirect('/login?message=User not found&type=error');
         }
 
-        const vToken = jwt.sign({ _id: findUser._id, aadharId: findUser.aadharId, role: findUser.role }, process.env.JWT_SECRET_KEY, 
-            // { expiresIn: "10m" }
-        )
-        res.cookie('vToken', vToken, 
-            // {httpOnly: true, secure: true, maxAge: 10 * 60 * 1000}
-        )
+        const passwordMatched = await bcrypt.compare(password, findUser.password);
+        if (!passwordMatched) {
+            return res.redirect('/login?message=Invalid password&type=error');
+        }
 
-        // return res.redirect('/voter/home');
-        return res.redirect('/voter/home?message=Logged in successfully!&type=success');
-        
+        const vToken = jwt.sign(
+            { _id: findUser._id, aadharId: findUser.aadharId, role: findUser.role },
+            process.env.JWT_SECRET_KEY
+        );
+
+        res.cookie('vToken', vToken);
+
+        return res.redirect('/voter/home?message=Logged in successfully&type=success');
     } catch (err) {
         console.error('Error:', err);
-        return res.redirect('/login?error=ServerError');
+        return res.redirect('/login?message=Internal Server Error!&type=error');
     }
-}
+};
+
 
 
 const signupLogic = (req, res)=>{

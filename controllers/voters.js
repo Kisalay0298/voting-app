@@ -4,10 +4,8 @@ const partyModel = require('../model/party')
 const candidateModel = require('../model/candidate')
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
-const axios = require('axios');
-const mongoose = require("mongoose");
-
-
+const { pushNotificationJoinParty, pushNotificationCreateParty, } = require('../controllers/notifications')
+const { addNewCandidate, updateCandidate }= require('../controllers/candidates')
 
 
 
@@ -68,20 +66,21 @@ const getCandidateToVote = async(req, res)=>{
     }
 }
 
+
 // Form new party
 const applyForNewParty = async (req, res) => {
     try {
         const voterId = req.user._id;
 
         // Fetch voter details and validate existence
-        const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted -role -isVerified');
+        const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted -role');
         if (!voter) {
-            return res.status(404).json({ message: "Voter not found" });
+            return res.redirect('/login?message=Voter not found!&type=error');
         }
 
         // Age validation for forming a party
         if (voter.age < 23) {
-            return res.status(401).json({ message: "You are not eligible to form a party" });
+            return res.redirect('/voter/home?message=You are not eligible to form a party!&type=error');
         }
 
         const { name, manifesto } = req.body;
@@ -91,7 +90,7 @@ const applyForNewParty = async (req, res) => {
         // Check if the party name already exists
         const existingParty = await partyModel.findOne({ name });
         if (existingParty) {
-            return res.status(400).json({ message: "Party name already exists" });
+            return res.redirect('/voter/create-party?message=Party name already exists!&type=error');
         }
 
         // Handle image upload
@@ -101,7 +100,7 @@ const applyForNewParty = async (req, res) => {
                 imageURL = imageUpload.secure_url;
             } catch (uploadError) {
                 console.error('Image Upload Error:', uploadError);
-                return res.status(500).json({ message: "Failed to upload image" });
+                return res.redirect('/voter/create-party?message=Failed to upload image!&type=error');
             }
         }
 
@@ -116,18 +115,21 @@ const applyForNewParty = async (req, res) => {
             symbol: imageURL
         });
 
-        await party.save();
+        const newParty = await party.save();
 
         // Check if the party creator is already a candidate
+        let updated;
         const existingCandidate = await candidateModel.findOne({ voterId: voter._id });
-        if (existingCandidate) {
-            // Update the candidate's party ID
-            existingCandidate.partyId = party._id;
-            existingCandidate.party = party;
-            await existingCandidate.save();
-        }
 
-        res.json({ message: "Party created successfully" });
+        if (existingCandidate) {
+            updated = await updateCandidate(newParty, voter, existingCandidate);
+        }else{
+            updated = await addNewCandidate(newParty, voter)
+        }
+        
+        pushNotificationCreateParty(updated, voter, newParty)
+
+        return res.redirect('/voter/home?message=Party created successfully.&type=success');
 
     } catch (err) {
         console.error('Error:', err);
@@ -141,47 +143,21 @@ const applyForCandidate = async (req, res) => {
     try {
         const voterId = req.user._id;
         const alreadyCandidate = await candidateModel.findOne({ voterId });
-
-        if (alreadyCandidate) {
-            await candidateModel.deleteOne({ _id: alreadyCandidate._id });
-        }
+        const { partyName } = req.body;
 
         const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted');
-        const { partyName } = req.body;
         const party = await partyModel.findOne({ name: partyName }).select('-leader -__v -formedBy -members -totalVotes -status -result -electionYear -createdAt');
 
-        if (!party) {
-            return res.status(404).json({ message: "Party not found" });
+        let updated;
+        if (alreadyCandidate) {
+            updated = await updateCandidate(party, voter, alreadyCandidate);
+        }else{
+            updated = await addNewCandidate(party, voter)
         }
 
-        console.log("party: ", party._id);
-
-        const newCandidate = new candidateModel({
-            voterId: voter._id,
-            partyId: party._id,
-            candidate: voter,
-            party: party,
-        });
-
-        const updated = await newCandidate.save();
-
-        if (updated) {
-            // Send a notification after successful candidate application
-            try {
-                await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
-                    title: "New Candidate Application",
-                    message: `${voter.name} has applied as a candidate for the party ${party.name}.`,
-                    id: voter._id
-                });
-                console.log("Notification sent successfully.");
-            } catch (notifyError) {
-                console.error("Failed to send notification:", notifyError.message);
-            }
-
-            return res.redirect('/voter/home');
-        } else {
-            return res.redirect('/apply-for-candidate');
-        }
+        // also pushed notification
+        pushNotificationJoinParty(updated, voter, party)
+        return res.redirect(`/voter/home?message=Requested to join ${party.name} party successfully&type=error`);
 
     } catch (err) {
         console.error('Error:', err);

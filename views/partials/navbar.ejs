@@ -11,6 +11,24 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+    <script>
+        function showToast(message, type = "success") {
+            let bgColor = type === "success" 
+                ? "linear-gradient(to right, #28a745, #20c997)"  // Green gradient for success
+                : "linear-gradient(to right, #dc3545, #ff6b6b)"; // Red gradient for errors
+
+            Toastify({
+                text: message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: bgColor,
+                stopOnFocus: true,
+                offset: { y: 50 } // Moves toast slightly below
+            }).showToast();
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -507,7 +525,7 @@
         // If there's a message, show a toast
         if (message) {
             Toastify({
-                text: "Logged in successfully!",
+                text: message,
                 duration: 3000,
                 close: true,
                 gravity: "top", 

@@ -1,6 +1,6 @@
 const notificationModel = require('../model/notifications'); // Correct import
 const voterModel = require('../model/voter')
-
+const axios = require('axios');
 
 const postNotification =  async (req, res) => {
     try {
@@ -40,7 +40,70 @@ const getNotification = async (req, res) => {
 }
 
 
+
+
+// join any party as candidate
+const pushNotificationJoinParty = async (updated, voter, party)=> {
+    if (updated) {
+        // Send a notification after successful candidate application
+        try {
+            await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+                title: "New Party Application",
+                message: `requested to join ${party.name}.`,
+                id: voter._id
+            });
+            console.log("Notification sent successfully.");
+        } catch (notifyError) {
+            console.error("Failed to send notification:", notifyError.message);
+        }
+
+    } else {
+        return res.redirect('/apply-for-candidate');
+    }
+}
+
+
+
+
+// // create party as candidate
+// const pushNotificationCreateParty = async (updated, voter, party)=> {
+//     if (updated) {
+//         // Send a notification after successful candidate application
+//         try {
+//             await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+//                 title: "New Candidate Application",
+//                 message: `requested to form a new party named ${party.name}.`,
+//                 id: voter._id
+//             });
+//             console.log("Notification sent successfully.");
+//         } catch (notifyError) {
+//             console.error("Failed to send notification:", notifyError.message);
+//         }
+
+//     } else {
+//         return res.redirect('/apply-for-candidate');
+//     }
+// }
+
+// Create party as candidate
+const pushNotificationCreateParty = async (updated, voter, party) => {
+    try {
+        await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+            title: "New Candidate Application",
+            message: `requested to form ${party.name} party.`,
+            id: voter._id
+        });
+        console.log("Notification sent successfully.");
+    } catch (notifyError) {
+        console.error("Failed to send notification:", notifyError.message);
+    }
+};
+
+
+
 module.exports={
     postNotification,
-    getNotification
+    getNotification,
+    pushNotificationJoinParty,
+    pushNotificationCreateParty,
 }

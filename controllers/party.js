@@ -6,18 +6,17 @@ const addNewParty=async (req, res)=>{
         const {name, symbol, leader, manifesto }=req.body
 
         if(!name || !symbol || !leader || !manifesto){
-            return res.status(400).json({message:"Please fill all the fields"})
+            return res.redirect('/voter/create-party?message=Please fill all the fields!&type=error');
         }
 
         const party = new partyModel({
             name, symbol, leader, manifesto
         })
         await party.save()
-        
-        res.status(201).json({ message: "Party added successfully" })
+        return res.redirect('/voter/home?message=Party added successfully&type=success');
         
     } catch (error) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/signup?message=Internal Server Error!&type=error');
     }
 }
