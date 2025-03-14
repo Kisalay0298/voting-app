@@ -54,7 +54,8 @@ const handleUserLogin = async (req, res)=>{
         const passwordMatched = await bcrypt.compare(password, findUser.password)
         console.log(passwordMatched)
         if(!passwordMatched){
-            return res.status(400).json({message: "Invalid password."})
+            // return res.status(400).json({message: "Invalid password."})
+            return res.redirect('/login?message=Invalid password!&type=error');
         }
 
         const vToken = jwt.sign({ _id: findUser._id, aadharId: findUser.aadharId, role: findUser.role }, process.env.JWT_SECRET_KEY, 
@@ -64,7 +65,8 @@ const handleUserLogin = async (req, res)=>{
             // {httpOnly: true, secure: true, maxAge: 10 * 60 * 1000}
         )
 
-        return res.redirect('/voter/home');
+        // return res.redirect('/voter/home');
+        return res.redirect('/voter/home?message=Logged in successfully!&type=success');
         
     } catch (err) {
         console.error('Error:', err);

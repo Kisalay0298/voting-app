@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <!-- Add this inside <head> -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <style>
         /* Global Styles */
         * {
@@ -121,5 +125,38 @@
             <button class="button" onclick="window.location.href='/candidates'">Candidates</button>
         </div>
     </div>
+
+    <script>
+        // Function to get query parameter values
+        function getQueryParam(param) {
+            let searchParams = new URLSearchParams(window.location.search);
+            return searchParams.get(param);
+        }
+    
+        // Retrieve message and type from URL
+        let message = getQueryParam("message");
+        let type = getQueryParam("type");
+    
+        // If there's a message, show a toast
+        if (message) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: type === "success" ? "#28a745" : "#dc3545",
+            }).showToast();
+        }
+    
+        // Remove query params from URL after displaying the toast
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.searchParams.delete("message");
+            url.searchParams.delete("type");
+            window.history.replaceState({}, document.title, url);
+        }
+    </script>
+    
 </body>
 </html>

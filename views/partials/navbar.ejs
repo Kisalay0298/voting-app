@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <!-- Add this inside <head> -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <style>
         * {
@@ -310,7 +312,13 @@
             background: #f4f4f4;
             cursor: pointer;
         }
-
+        .custom-toast {
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            padding: 12px 20px;
+            font-weight: bold;
+        }
 
     </style>
 </head>
@@ -485,7 +493,42 @@
 
     </script>
     
+    <script>
+        // Function to get query parameter values
+        function getQueryParam(param) {
+            let searchParams = new URLSearchParams(window.location.search);
+            return searchParams.get(param);
+        }
     
+        // Retrieve message and type from URL
+        let message = getQueryParam("message");
+        let type = getQueryParam("type");
+    
+        // If there's a message, show a toast
+        if (message) {
+            Toastify({
+                text: "Logged in successfully!",
+                duration: 3000,
+                close: true,
+                gravity: "top", 
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #28a745, #20c997)", // Green gradient
+                className: "custom-toast",
+                stopOnFocus: true, 
+                offset: {
+                    y: 65 // Moves it 50px lower
+                }
+            }).showToast();
+        }
+    
+        // Remove query params from URL after displaying the toast
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.searchParams.delete("message");
+            url.searchParams.delete("type");
+            window.history.replaceState({}, document.title, url);
+        }
+    </script>
 
 </body>
 
