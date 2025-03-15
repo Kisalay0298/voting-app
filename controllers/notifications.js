@@ -65,25 +65,6 @@ const pushNotificationJoinParty = async (updated, voter, party)=> {
 
 
 
-// // create party as candidate
-// const pushNotificationCreateParty = async (updated, voter, party)=> {
-//     if (updated) {
-//         // Send a notification after successful candidate application
-//         try {
-//             await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
-//                 title: "New Candidate Application",
-//                 message: `requested to form a new party named ${party.name}.`,
-//                 id: voter._id
-//             });
-//             console.log("Notification sent successfully.");
-//         } catch (notifyError) {
-//             console.error("Failed to send notification:", notifyError.message);
-//         }
-
-//     } else {
-//         return res.redirect('/apply-for-candidate');
-//     }
-// }
 
 // Create party as candidate
 const pushNotificationCreateParty = async (updated, voter, party) => {

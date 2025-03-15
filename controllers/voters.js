@@ -13,23 +13,17 @@ const candidateToVote = async (req, res) => {
     try {
         const candidateId = req.body.selectedCandidate;
         const userId = req.user._id;
-        
-        console.log("candidateId1:", candidateId);
-        console.log("Type of candidateId:", typeof candidateId);
 
         // Fetch voter and check if they have already voted
         const voter = await voterModel.findById(userId);
-        if (!voter) return res.status(404).json({ message: "Voter not found" });
-        if (voter.hasVoted) return res.status(400).json({ message: "You have already voted." });
+        if (!voter) return res.redirect('/login?message=Voter not found!&type=error');
+        if (voter.hasVoted) return res.redirect('/voter/home?message=You have already voted.&type=error');
 
-        // Update voter's status
-        voter.hasVoted = true;
 
         // Fetch candidate
             const cd = await candidateModel.findOne({voterId: candidateId});
             if (!cd) {
-                console.error("Candidate not found");
-                return res.status(404).json({ error: "Candidate not found" });
+                return res.redirect('/voter/vote?message=CandidateNot found!&type=error');
             }
 
         // Push vote to array
@@ -38,16 +32,18 @@ const candidateToVote = async (req, res) => {
         // Increase vote count
         cd.voteCount += 1;
 
+        // Update voter's status
+        voter.hasVoted = true;
+
         // Save updated candidate document
         await cd.save();
-        await voter.save(); // Save voter's vote status
+        await voter.save();
 
-        console.log("Vote recorded successfully:", cd);
-        res.redirect('/voter/home');
+        return res.redirect('/voter/home?message=Vote polled successfully.&type=success');
 
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 };
 
@@ -57,12 +53,12 @@ const candidateToVote = async (req, res) => {
 
 const getCandidateToVote = async(req, res)=>{
     try {
-        // const { candidateId } = req.params;
         const candidates = await candidateModel.find();
 
         res.render('vote', { candidates, user: req.user });
     } catch (error) {
-        res.status(500).send('Error loading candidates');
+        console.error('Error:', error);
+        return res.redirect('/voter/home?message=Candidate not found!&type=error');
     }
 }
 
@@ -133,7 +129,7 @@ const applyForNewParty = async (req, res) => {
 
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 };
 
@@ -161,7 +157,7 @@ const applyForCandidate = async (req, res) => {
 
     } catch (err) {
         console.error('Error:', err);
-        return res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 };
 
@@ -175,7 +171,7 @@ const getApplyForCandidate = async (req, res) => {
         res.render("requestForCandidate", { user: req.user, error: null, userApplying });
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 };
 
@@ -185,13 +181,13 @@ const getApplyForNewParty = async (req, res)=> {
     try {
         if (!req.user) {
             console.log("User not found in req object.");
-            return res.redirect('/login');
+            return res.redirect('/login?message=Internal Server Error!&type=error');
         }
         console.log(req.user)
         res.render('create-party', { user: req.user, error: null });
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 };
 

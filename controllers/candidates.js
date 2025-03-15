@@ -21,7 +21,7 @@ const addNewPCandidate=async (req, res)=>{
         
     } catch (error) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 }
 

@@ -20,7 +20,7 @@ async function handleUserGetData(req, res) {
 
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/login?message=Internal Server Error!&type=error');
     }
 }
 
@@ -50,11 +50,11 @@ async function handleUserUpdate(req, res) {
         }
         
         await user.save();
-        return res.redirect('/voter/profile');
+        return res.redirect('/voter/profile?message=Profile updated successfully&type=success');
         
     } catch (err) {
         console.error('Error:', err);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/login?message=Internal Server Error!&type=error');
     }
 }
 
@@ -67,19 +67,20 @@ async function handleUserGetUpdate(req, res) {
 
         if (!token) {
             res.redirect('/login')
+            return res.redirect('/login?message=Unauthorized user. Access denied!&type=error');
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         const user = await LoginModel.findById(decoded._id).select('-password -__v');
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.redirect('/login?message=No user found!&type=error');
         }
 
         res.render('update_profile', { user })
 
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ message: "Internal Server Error", error: err.message });
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
     }
 }
 
