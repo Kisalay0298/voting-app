@@ -10,25 +10,9 @@
     <!-- Add this inside <head> -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <script>
-        function showToast(message, type = "success") {
-            let bgColor = type === "success" 
-                ? "linear-gradient(to right, #28a745, #20c997)"  // Green gradient for success
-                : "linear-gradient(to right, #dc3545, #ff6b6b)"; // Red gradient for errors
-
-            Toastify({
-                text: message,
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: bgColor,
-                stopOnFocus: true,
-                offset: { y: 50 } // Moves toast slightly below
-            }).showToast();
-        }
-    </script>
+    
     <style>
         * {
             margin: 0;
@@ -336,6 +320,7 @@
             font-size: 16px;
             padding: 12px 20px;
             font-weight: bold;
+            color: white;
         }
 
     </style>
@@ -351,7 +336,7 @@
             <!-- Dropdown Menu -->
             <div class="dropdown">
                 <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
-                    <a href="#">Election ▼</a>
+                    <a href="#">Election <i class="fa fa-angle-down" onclick="toggleDropdown()" style="font-size:15px"></i></a>
                 </div>
                 <div class="dropdown-content" id="dropdownContent">
                     <a href="/contest-election">🏆 Contest Election</a>
@@ -524,13 +509,16 @@
     
         // If there's a message, show a toast
         if (message) {
+            let bgColor = type === "success" 
+                ? "linear-gradient(to right, #28a745, #20c997)"  // Green gradient for success
+                : "linear-gradient(to right, #dc3545, #ff6b6b)"; // Red gradient for errors
             Toastify({
                 text: message,
                 duration: 3000,
                 close: true,
                 gravity: "top", 
                 position: "right",
-                backgroundColor: "linear-gradient(to right, #28a745, #20c997)", // Green gradient
+                backgroundColor: bgColor, // Green gradient
                 className: "custom-toast",
                 stopOnFocus: true, 
                 offset: {

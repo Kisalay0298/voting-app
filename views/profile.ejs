@@ -352,36 +352,7 @@
                 document.removeEventListener('click', closeOnClickOutside); // Cleanup event listener
             }
         }
-
-        // async function fetchNotifications() {
-        //     try {
-        //         const response = await fetch('/notifications');
-        //         const notifications = await response.json();
-                
-        //         const notificationList = document.getElementById('notificationList');
-        //         const notificationCount = document.getElementById('notificationCount'); // Get badge element
-
-        //         notificationList.innerHTML = ''; // Clear existing list
-
-        //         if (notifications.length === 0) {
-        //             notificationList.innerHTML = '<li>No new notifications</li>';
-        //             notificationCount.style.display = 'none'; // Hide badge if no notifications
-        //         } else {
-        //             notifications.forEach(notification => {
-        //                 const li = document.createElement('li');
-        //                 li.innerHTML = <strong>${notification.from.name}:</strong> ${notification.message};
-        //                 notificationList.appendChild(li);
-        //             });
-
-        //             // Show the count badge and update it
-        //             notificationCount.textContent = notifications.length;
-        //             notificationCount.style.display = 'inline'; 
-        //         }
-        //     } catch (error) {
-        //         console.error("Error fetching notifications:", error);
-        //         notificationList.innerHTML = '<li>Error loading notifications</li>';
-        //     }
-        // }
+        
         async function fetchNotifications() {
             try {
                 const response = await fetch('/notifications');
@@ -395,7 +366,7 @@
                 } else {
                     notifications.forEach(notification => {
                         const li = document.createElement('li');
-                        li.innerHTML = <strong>${notification.from.name}:</strong> ${notification.message};
+                        li.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
                         notificationList.appendChild(li);
                     });
                 }
@@ -410,10 +381,6 @@
 
         // Set interval to fetch notifications every 5 minutes (300,000 ms)
         setInterval(fetchNotifications, 300000);
-
-
-        // Automatically refresh notifications every 5 seconds
-        // setInterval(fetchNotifications, 300000);
 
         function toggleProfileMenu() {
             const menu = document.getElementById("profileMenu");
