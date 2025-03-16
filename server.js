@@ -8,6 +8,7 @@ const path = require('path')
 require('dotenv').config();
 const notificationRoutes = require('./routes/notifications')
 const party = require('./routes/parties')
+const admin = require('./routes/admin')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +22,7 @@ app.set('views', path.resolve('./views'))
 
 app.use('/', login)
 app.use('/api', party)
+app.use('/admin', admin)
 app.use('/voter', voters)
 app.use('/user', user)
 app.use('/',notificationRoutes);

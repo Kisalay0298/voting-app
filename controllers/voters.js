@@ -194,6 +194,18 @@ const getApplyForNewParty = async (req, res)=> {
 
 
 
+const seeEligibleVoters= async (req, res) => {
+    try {
+        const voters = await voterModel.find({})
+        res.render('voters', {user: req.user, voters})
+        
+    } catch (error) {
+        console.error("Error:", error);
+        return res.redirect('/voter/home?message=Internal Server Error!&type=error');
+    }
+}
+
+
 // can view results after election result
 
 
@@ -205,4 +217,5 @@ module.exports={
     getApplyForNewParty,
     candidateToVote,
     getCandidateToVote,
+    seeEligibleVoters,
 }

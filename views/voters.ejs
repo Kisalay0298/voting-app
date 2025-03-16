@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eligible Voters</title>
+
+    <!-- Styles -->
+    <style>
+        .container {
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 100px;
+        }
+    
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            max-height: 400px; /* Set table height */
+            overflow-y: auto;  /* Enables vertical scrolling */
+            border: 1px solid #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        #filter{
+            background-color:  purple; 
+            border: none; 
+            border-radius: 4px; 
+            color: #f1f1f1; 
+            height: 30px;
+        }
+        #voter-count{
+            display: flex; 
+            font-size: large; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('partials/navbar') %>
+
+    <div class="container">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; margin: 5px;">
+            <h1 style="display: flex;">Eligible Voters</h1>
+
+            <!-- Dropdown Filter -->
+            <div style="display: flex; align-items: center;">
+                <select id="filter" onchange="filterVoters()">
+                    <option value="all">All Voters</option>
+                    <option value="voted">Voted</option>
+                    <option value="notVoted">Not Voted</option>
+                </select>
+
+                <p id="voter-count">=<span id="count">0</span></p>
+            
+            </div>
+        </div>
+        
+        
+
+        <div class="table-container">
+            <!-- Voters Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Name</th>
+                        <th>Mobile No</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Voted</th>
+                    </tr>
+                </thead>
+                <tbody id="voter-table">
+                    <% let eligibleVoters = voters.filter(user => user.age > 18); %>
+                    <% eligibleVoters.forEach((user, index) => { %>
+                        <tr data-voted="<%= user.hasVoted %>">
+                            <td><%= index + 1 %></td>
+                            <td><%= user.name %></td>
+                            <td><%= user.phone %></td>
+                            <td><%= user.gender %></td>
+                            <td><%= user.age %></td>
+                            <td><%= user.hasVoted ? "✅ Yes" : "❌ No" %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function updateVoterCount() {
+            let visibleRows = document.querySelectorAll("#voter-table tr:not([style*='display: none'])");
+            document.getElementById("count").innerText = visibleRows.length;
+        }
+    
+        function filterVoters() {
+            let filter = document.getElementById("filter").value;
+            document.querySelectorAll("#voter-table tr").forEach(row => {
+                let hasVoted = row.getAttribute("data-voted") === "true";
+                if (filter === "all") {
+                    row.style.display = "";
+                } else if (filter === "voted") {
+                    row.style.display = hasVoted ? "" : "none";
+                } else if (filter === "notVoted") {
+                    row.style.display = !hasVoted ? "" : "none";
+                }
+            });
+            updateVoterCount();
+        }
+    
+        // Initial count on page load
+        document.addEventListener("DOMContentLoaded", updateVoterCount);
+    </script>
+
+</body>
+</html>

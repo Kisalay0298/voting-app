@@ -202,6 +202,8 @@
             text-align: center;
             border: 2px solid rgba(0, 0, 0, 0.2);
             margin-top: 80px;
+            position: absolute;
+            top: 55px;
         }
 
         .profile-img {
@@ -318,105 +320,20 @@
     <div class="card">
         <img src="<%= user.image || '/images/login.png' %>" alt="Voter Photo" class="profile-img">
         <h2>Voter ID Card</h2>
-        <p class="info"><span class="label">Name:</span> <%= user.name %></p>
-        <p class="info"><span class="label">Age:</span> <%= user.age %></p>
-        <p class="info"><span class="label">Gender:</span> <%= user.gender %></p>
-        <p class="info"><span class="label">Mob. No:</span> <%= user.phone %></p>
-        <p class="info"><span class="label">Aadhar ID:</span> <%= user.aadharId %></p>
-        <p class="info"><span class="label">Address:</span> <%= user.address %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Name:</span> <%= user.name %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Age:</span> <%= user.age %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Gender:</span> <%= user.gender %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Mob. No:</span> <%= user.phone %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Aadhar ID:</span> <%= user.aadharId %></p>
+        <p style="display: flex; justify-content: space-between;" class="info"><span class="label">Address:</span> <%= user.address %></p>
         <img src="<%= user.qrCode %>" alt="QR Code" class="qr-code">
+        <i class='far fa-edit' style='position: absolute;
+        bottom: 385px;
+        right: 27px;
+        font-size: 20px;
+        color: #333;
+        cursor: pointer;' onclick="window.location.href='/voter/profile-update'"></i>
     </div>
-
-
-    <script>
-        function toggleNotifications() {
-            const box = document.getElementById('notificationBox');
-            const isVisible = box.style.display === 'block';
-    
-            if (!isVisible) {
-                box.style.display = 'block';
-                fetchNotifications();
-                document.addEventListener('click', closeOnClickOutside); // Add event listener
-            } else {
-                box.style.display = 'none';
-                document.removeEventListener('click', closeOnClickOutside); // Remove event listener
-            }
-        }
-    
-        function closeOnClickOutside(event) {
-            const box = document.getElementById('notificationBox');
-            const bell = document.querySelector('.notification-bell');
-    
-            if (!box.contains(event.target) && !bell.contains(event.target)) {
-                box.style.display = 'none';
-                document.removeEventListener('click', closeOnClickOutside); // Cleanup event listener
-            }
-        }
-        
-        async function fetchNotifications() {
-            try {
-                const response = await fetch('/notifications');
-                const notifications = await response.json();
-                const notificationList = document.getElementById('notificationList');
-
-                notificationList.innerHTML = ''; // Clear existing list
-
-                if (notifications.length === 0) {
-                    notificationList.innerHTML = '<li>No new notifications</li>';
-                } else {
-                    notifications.forEach(notification => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
-                        notificationList.appendChild(li);
-                    });
-                }
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-                notificationList.innerHTML = '<li>Error loading notifications</li>';
-            }
-        }
-
-        // Fetch notifications immediately when the page loads
-        fetchNotifications();
-
-        // Set interval to fetch notifications every 5 minutes (300,000 ms)
-        setInterval(fetchNotifications, 300000);
-
-        function toggleProfileMenu() {
-            const menu = document.getElementById("profileMenu");
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        }
-
-        // Close menu when clicking outside
-        document.addEventListener("click", function (event) {
-            const menu = document.getElementById("profileMenu");
-            const profilePic = document.querySelector(".profile-pic");
-
-            if (menu && !menu.contains(event.target) && event.target !== profilePic) {
-                menu.style.display = "none";
-            }
-        });
-
-        function toggleDropdown() {
-            const dropdown = document.getElementById("dropdownContent");
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener("click", function (event) {
-            const dropdown = document.getElementById("dropdownContent");
-            const dropBtn = document.getElementById("drop");
-
-            if (dropdown && !dropdown.contains(event.target) && !dropBtn.contains(event.target)) {
-                dropdown.style.display = "none";
-            }
-        });
-
-
-
-    </script>
-    
-    
 
 </body>
 
