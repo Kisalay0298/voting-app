@@ -17,7 +17,7 @@ const candidateToVote = async (req, res) => {
         // Fetch voter and check if they have already voted
         const voter = await voterModel.findById(userId);
         if (!voter) return res.redirect('/login?message=Voter not found!&type=error');
-        if (voter.hasVoted) return res.redirect('/voter/home?message=You have already voted.&type=error');
+        if (voter.hasVoted) return res.redirect('/voter/home?message=You have already voted.&type=warning');
 
 
         // Fetch candidate
@@ -153,7 +153,7 @@ const applyForCandidate = async (req, res) => {
 
         // also pushed notification
         pushNotificationJoinParty(updated, voter, party)
-        return res.redirect(`/voter/home?message=Requested to join ${party.name} party successfully&type=error`);
+        return res.redirect(`/voter/home?message=Requested to join ${party.name} party successfully&type=success`);
 
     } catch (err) {
         console.error('Error:', err);

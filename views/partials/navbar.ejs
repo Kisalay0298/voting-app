@@ -96,6 +96,7 @@
             border-radius: 5px;
             min-width: 180px;
             z-index: 100;
+            left: -40px;
         }
 
         .dropdown-content a {
@@ -196,22 +197,6 @@
             cursor: pointer;
             border: 2px solid #007bff;
         }
-
-        /* Card Styling */
-        /* .card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 350px;
-            text-align: center;
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            margin-top: 80px;
-        } */
 
         .profile-img {
             width: 120px;
@@ -340,8 +325,8 @@
                 </div>
                 <div class="dropdown-content" id="dropdownContent">
                     <a href="/contest-election">🏆 Contest Election</a>
-                    <a href="/admin/vote/analysis">📊 View Analysis</a>
-                    <a href="/view-result">📜 View Result</a>
+                    <a href="/admin/view-analysis">📊 View Analysis</a>
+                    <a href="/admin/view-result">📜 View Result</a>
                     <a href="/publish-result">📢 Publish Result</a>
                 </div>
             </div>
@@ -511,7 +496,10 @@
         if (message) {
             let bgColor = type === "success" 
                 ? "linear-gradient(to right, #28a745, #20c997)"  // Green gradient for success
-                : "linear-gradient(to right, #dc3545, #ff6b6b)"; // Red gradient for errors
+                : type === "error"
+                    ? "linear-gradient(to right, #dc3545, #ff6b6b)" // Red gradient for errors
+                    : "linear-gradient(to right, #ffc107, #ffdd57)";  // Yellow gradient for warning
+                    
             Toastify({
                 text: message,
                 duration: 3000,

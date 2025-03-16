@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Results</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            top: 100px;
+        }
+        h1, h2 {
+            color: #333;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #f1f1f1; transition: 0.2s; }
+        
+        /* Updated filter styling */
+        .filter-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .filter-container label {
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .filter-container select {
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+    <%- include('partials/navbar') -%>
+
+    <div class="container">
+        <h1>Voting Results</h1>
+        
+        <div style="display: flex; flex-direction: column; margin-top: 20px;">
+            <h2>Voter Turnout</h2>
+            <p><strong>Voted:</strong> <%= votedCount %> | <strong>Not Voted:</strong> <%= notVotedCount %></p>
+        </div>
+        
+        <div style="margin: 40px 0;">
+            <h2>Party-wise Vote Count</h2>
+            <table>
+                <tr>
+                    <th>Party Name</th>
+                    <th>Total Votes</th>
+                </tr>
+                <% if (partyNames && partyNames.length > 0) { %>
+                    <% for (let i = 0; i < partyNames.length; i++) { %>
+                        <tr>
+                            <td><%= partyNames[i] || "Unknown" %></td>
+                            <td><%= partyVotes[i] || 0 %></td>
+                        </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr><td colspan="2">No party data available</td></tr>
+                <% } %>
+            </table>
+        </div>
+
+        <div>
+            <h2>Candidate Vote Count</h2>
+            
+            <!-- Filter by Party Dropdown (Aligned to the Right) -->
+            <div class="filter-container">
+                <label for="partyFilter">Filter by Party:</label>
+                <select id="partyFilter">
+                    <option value="all">All</option>
+                    <% if (Array.isArray(partyNames) && partyNames.length > 0) { %>
+                        <% partyNames.forEach(party => { %>
+                            <option value="<%= party %>"><%= party %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+            </div>
+
+            <table id="candidateTable">
+                <tr>
+                    <th>Candidate Name</th>
+                    <th>Party</th>
+                    <th>Votes</th>
+                </tr>
+                <% if (candidateNames && candidateNames.length > 0) { %>
+                    <% for (let i = 0; i < candidateNames.length; i++) { %>
+                        <tr data-party="<%= candidateParties[i] || 'Independent' %>">
+                            <td><%= candidateNames[i] || "Unknown" %></td>
+                            <td><%= candidateParties[i] || "Independent" %></td>
+                            <td><%= candidateVotes[i] || 0 %></td>
+                        </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr><td colspan="3">No candidate data available</td></tr>
+                <% } %>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#partyFilter").change(function() {
+                var selectedParty = $(this).val();
+                $("#candidateTable tr:not(:first)").hide()
+                    .filter(function() {
+                        return selectedParty === "all" || $(this).data("party") === selectedParty;
+                    }).show();
+            });
+        });
+    </script>
+
+</body>
+</html>

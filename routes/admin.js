@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { restrictToLoginUserOnly } = require('../middleware/auth')
-const { voteAnalysis } = require('../controllers/admin')
+const { voteAnalysis, viewResult } = require('../controllers/admin')
 
-router.get("/vote/analysis", restrictToLoginUserOnly, voteAnalysis)
+router.get("/view-analysis", restrictToLoginUserOnly, voteAnalysis)
+router.get("/view-result", restrictToLoginUserOnly, viewResult)
 
 // router.get('/adminPanel', homePageEnterAnyUser);
 // router.get('/vote/analysis', homePageEnterAnyUser);

@@ -27,7 +27,7 @@ const postNotification =  async (req, res) => {
 
 const getNotification = async (req, res) => {
     try {
-        console.log('run')
+        console.log('notification pushed')
         const notifications = await notificationModel.find({})
             .populate('from')
             .sort({ createdAt: -1 }); 
