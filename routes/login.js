@@ -2,14 +2,18 @@ const express = require('express');
 const router = express.Router();
 // const { signupLogic } = require('../controllers/login')
 const { handleUserSignup, handleUserLogin, signupLogic, loginLogic } = require('../controllers/signup')
+const { getCandidateToVote } = require('../controllers/voters')
 
 // homePage
-// router.get('/candidates', homePageEnterAnyUser)
+router.get('/candidates', getCandidateToVote)
 
 
 // create a new user
 router.get("/signup", signupLogic)
 router.post('/signup', handleUserSignup);
+
+
+
 
 
 

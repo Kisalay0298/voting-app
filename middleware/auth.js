@@ -31,7 +31,7 @@ async function restrictToLoginUserOnly(req, res, next) {
 
 
 async function restrictToAdminOnly(req, res, next){
-    const voterId = req.cookies?.uid;
+    const voterId = req.cookies.vToken;
 
     if (!voterId) {
         return res.redirect('/login');

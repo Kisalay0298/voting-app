@@ -109,9 +109,17 @@
     </style>
 </head>
 <body>
-    <%- include('partials/navbar') %>
+
+    <% if (user) { %>
+        <%- include('partials/navbar') %>
+    <% } %>
+
     <div class="container">
-        <h1>Vote for Your Candidate</h1>
+        <% if (user) { %>
+            <h1>Vote for Your Candidate</h1>
+        <% } else { %>
+            <h1>Candidates For The Election</h1>
+        <% } %>
         <form action="/voter/submit-vote" method="post">
             <% if (candidates.length > 0) { %>
                 <table>
@@ -121,7 +129,9 @@
                             <th>Name</th>
                             <th>Party</th>
                             <th>Party Logo</th>
-                            <th>Vote</th>
+                            <% if (user) { %>
+                                <th>Vote</th>
+                            <% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,20 +145,22 @@
                                 <td>
                                     <img src="<%= cnd.party.symbol %>" alt="Party Image" width="50px" height="50px" style="border-radius: 50%;">
                                 </td>
-                                <!-- <td>
-                                    <input type="radio" name="selectedCandidate" value="<%= cnd.candidate._id %>" id="candidate_<%= index %>" required>
-                                </td> -->
-                                <td>
-                                    <input type="radio" name="selectedCandidate" value="<%= cnd.candidate._id %>" id="candidate_<%= index %>" required>
-                                </td>
-                                
+                                <% if (user) { %>
+                                    <td>
+                                        <input type="radio" name="selectedCandidate" value="<%= cnd.candidate._id %>" id="candidate_<%= index %>" required>
+                                    </td>
+                                <% } %>
                             </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="button-container">
-                    <button type="submit" class="button">Submit Vote</button>
-                </div>
+                <% if(user) { %>
+                    <div class="button-container">
+                        <button type="submit" class="button">Submit Vote</button>
+                    </div>
+                <% } else { %>
+                    <button class="button" onclick="window.location.href='/login'">Login To Vote</button>
+                <% } %>
             <% } else { %>
                 <p>No candidates available</p>
             <% } %>
@@ -157,7 +169,9 @@
 
 
     <script>
+        const isUserLoggedIn = <%= user ? 'true' : 'false' %>;
         function selectCandidate(index) {
+            if (!isUserLoggedIn) return;
             // Remove the selected-row class from all rows
             document.querySelectorAll('.selectable-row').forEach(row => row.classList.remove('selected-row'));
 

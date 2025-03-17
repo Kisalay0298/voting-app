@@ -341,18 +341,20 @@
             <a href="/voter/home">Home</a>
             
             <!-- Dropdown Menu -->
-            <div class="dropdown">
-                <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
-                    <a href="#">Election <i class="fa fa-angle-down" onclick="toggleDropdown()" style="font-size:15px"></i></a>
-                </div>
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="/contest-election">🏆 Contest Election</a>
-                    <a href="/admin/view-analysis">📊 View Analysis</a>
-                    <a href="/admin/view-result">📜 View Result</a>
-                    <a href="/publish-result">📢 Publish Result</a>
-                </div>
-            </div>
             
+            <% if (user.role === 'admin') { %>
+                <div class="dropdown">
+                    <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
+                        <a href="#">Election <i class="fa fa-angle-down" onclick="toggleDropdown()" style="font-size:15px"></i></a>
+                    </div>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <a href="/contest-election">🏆 Contest Election</a>
+                        <a href="/admin/view-analysis">📊 View Analysis</a>
+                        <a href="/admin/view-result">📜 View Result</a>
+                        <a href="/publish-result">📢 Publish Result</a>
+                    </div>
+                </div>
+            <% } %>
             
 
             <a href="/about">About</a>
@@ -379,7 +381,9 @@
                     <ul>
                         <li><a href="/voter/profile">👤 View Profile</a></li>
                         <li><a href="/verify">✔️ Verify Account</a></li>
-                        <li><a href="/contest">🏆 Contest Election</a></li>
+                        <% if (user.role === 'admin') { %>
+                            <li><a href="/contest">🏆 Contest Election</a></li>
+                        <% } %>
                         <li><a href="/voter/create-party">🏛️ Form New Party</a></li>
                         <li><a href="/voter/apply-for-candidate">🤝 Join Party</a></li>
                         <li><a href="/voter/logout">🚪 Log Out</a></li>

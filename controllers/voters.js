@@ -19,6 +19,9 @@ const candidateToVote = async (req, res) => {
         if (!voter) return res.redirect('/login?message=Voter not found!&type=error');
         if (voter.hasVoted) return res.redirect('/voter/home?message=You have already voted.&type=warning');
 
+        if(voter.age < process.env.MIN_AGE_TO_VOTE){
+            return res.redirect('/voter/home?message=You are not eligible to vote.&type=error')
+        }
 
         // Fetch candidate
             const cd = await candidateModel.findOne({voterId: candidateId});
@@ -75,8 +78,8 @@ const applyForNewParty = async (req, res) => {
         }
 
         // Age validation for forming a party
-        if (voter.age < 23) {
-            return res.redirect('/voter/home?message=You are not eligible to form a party!&type=error');
+        if(voter.age < process.env.MIN_AGE_TO_STAND){
+            return res.redirect('/voter/home?message=You are not eligible to form a party!&type=error')
         }
 
         const { name, manifesto } = req.body;

@@ -74,8 +74,29 @@ const updateCandidate = async (party, voter, existingCandidate) => {
 
 
 
+const updateCandidatePersonalDetails = async ( existingCandidate, user) => {
+
+    // Track changes in name, image, and phone number
+    if (user.name !== existingCandidate.candidate.name) {
+        existingCandidate.candidate.name = user.name;
+    }
+    if (user.image !== existingCandidate.candidate.image) {
+        existingCandidate.candidate.image = user.image;
+    }
+    if (user.phone !== existingCandidate.candidate.phone) {
+        existingCandidate.candidate.phone = user.phone;
+    }
+    console.log('candidate function updated successfully ', existingCandidate)
+
+    const updated = await existingCandidate.save();  // Fix: Correct async save syntax
+    return updated;
+};
+
+
+
 module.exports={
     addNewPCandidate,
     addNewCandidate,
     updateCandidate,
+    updateCandidatePersonalDetails
 }
