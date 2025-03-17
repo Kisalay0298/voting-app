@@ -82,9 +82,65 @@ const pushNotificationCreateParty = async (updated, voter, party) => {
 
 
 
+// update notification user name or image if profile updated
+// async function notificationOnProfileUpdate(user) {
+//     try {
+//         await notificationModel.updateMany(
+//             { "from.id": user._id }, // Find all notifications related to the user
+//             {
+//                 $set: {
+//                     "from.name": user.name,
+//                     "from.image": user.image
+//                 }
+//             }
+//         );
+
+//         console.log("Updated all notifications related to the user.");
+//     } catch (err) {
+//         console.error("Error updating notifications for profile update:", err);
+//     }
+// }
+const mongoose = require("mongoose");
+
+async function notificationOnProfileUpdate(user) {
+    try {
+        // Convert user._id to ObjectId if needed
+        const userId = new mongoose.Types.ObjectId(user._id);
+
+        // Debugging: Check if notifications exist before updating
+        const existingNotifications = await notificationModel.find({ "from._id": userId });
+        console.log("Existing notifications:", existingNotifications);
+
+        if (existingNotifications.length === 0) {
+            console.log("No notifications found for this user.");
+            return;
+        }
+
+        // Update notifications
+        const updateResult = await notificationModel.updateMany(
+            { "from._id": userId },
+            {
+                $set: {
+                    "from.name": user.name,
+                    "from.image": user.image
+                }
+            }
+        );
+
+        console.log(`Modified ${updateResult.modifiedCount} notifications.`);
+    } catch (err) {
+        console.error("Error updating notifications for profile update:", err);
+    }
+}
+
+
+
+
+
 module.exports={
     postNotification,
     getNotification,
     pushNotificationJoinParty,
     pushNotificationCreateParty,
+    notificationOnProfileUpdate
 }

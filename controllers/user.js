@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
 const candidateModel = require('../model/candidate')
+const { notificationOnProfileUpdate } = require('./notifications')
 
 // get user profile
 async function handleUserGetData(req, res) {
@@ -29,7 +30,7 @@ async function handleUserUpdate(req, res) {
     try {
 
         const decoded = req.user.id
-        const user = await LoginModel.findById(decoded).select('-password -hasVoted -__v'); 
+        const user = await LoginModel.findById(decoded).select('-password -__v -qrCode -hasVoted');
 
         if (!user) {
             return res.redirect('/login')
@@ -37,8 +38,12 @@ async function handleUserUpdate(req, res) {
 
         const { name, address, email, password } = req.body;
         const imageFile = req.file;
+        let profileUpdated = false;
 
-        if (name) user.name = name;
+        if (name) {
+            user.name = name;
+            profileUpdated = true;
+        }
         if (address) user.address = address;
         if (email) user.email = email;
         if (password) user.password = password;
@@ -47,9 +52,13 @@ async function handleUserUpdate(req, res) {
             const imageUpload = await cloudinary.uploader.upload(imageFile.path, {resource_type: 'image'});
             const imageURL = imageUpload.secure_url
             user.image= imageURL
+            profileUpdated = true;
         }
         
         await user.save();
+        if (profileUpdated) {
+            await notificationOnProfileUpdate(user);
+        }
         return res.redirect('/voter/profile?message=Profile updated successfully&type=success');
         
     } catch (err) {
