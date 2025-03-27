@@ -1,6 +1,8 @@
 const Candidate = require('../model/candidate');
 const Party = require('../model/party');
 const Voter = require('../model/voter');
+const electionModule = require('../model/election')
+
 
 const voteAnalysis = async (req, res) => {
     try {
@@ -176,7 +178,49 @@ const someCalculationsToGetDataa = async () => {
 };
 
 
+const startElection = async (req, res)=>{
+    // Start the election by setting the election status to "active"
+    try {
+        const election = await electionModule.findOne(); // Assuming one active election
+        if (!election) {
+            return res.status(404).json({ error: "No active election found" });
+        }
+        res.json({ startTime: election.startTime, endTime: election.endTime });
+    } catch (error) {
+        res.status(500).json({ error: "Something went wrong" });
+    }
+}
+
+const setTimer = async (req, res) => {
+    try {
+        const { startTime, endTime } = req.body;
+
+        // Ensure start time is before end time
+        if (new Date(startTime) >= new Date(endTime)) {
+            return res.status(400).json({ error: "Start time must be before end time!" });
+        }
+
+        // Save election timings (update if exists)
+        let election = await electionModule.findOne();
+        if (election) {
+            election.startTime = new Date(startTime);
+            election.endTime = new Date(endTime);
+        } else {
+            election = new electionModule({ startTime, endTime });
+        }
+        await election.save();
+
+        res.status(200).json({ message: "Election timer set successfully!" });
+    } catch (error) {
+        res.status(500).json({ error: "Something went wrong!" });
+    }
+}
+
+
+
 module.exports = {
     voteAnalysis,
-    viewResult
+    viewResult,
+    startElection,
+    setTimer
 };

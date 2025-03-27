@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Details</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Include your stylesheet -->
+    <style>
+        /* Modern Background Gradient */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a237e, #283593, #3949ab);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Centered Glass Container */
+        .container {
+            background: rgba(255, 255, 255, 0.2); /* Glass effect */
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        /* Notification Card */
+        .notification-card {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.15);
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Profile Picture */
+        .profilePic img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #ffcc00;
+            object-fit: cover;
+            box-shadow: 0 3px 6px rgba(255, 204, 0, 0.5);
+        }
+
+        /* Headings */
+        h2 {
+            margin-bottom: 15px;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffcc00;
+        }
+
+        h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #ffcc00;
+            text-align: center;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #ffcc00;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 12px 18px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            background: #ff5722;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(255, 87, 34, 0.4);
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Party Details */
+        .party-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            margin-top: 12px;
+            box-shadow: inset 0px 2px 5px rgba(255, 255, 255, 0.1);
+        }
+
+        .party-info {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h2>Notification Details</h2>
+        <div class="notification-card">
+            <h3><%= notification.title %></h3>
+
+            <!-- User & Party Info -->
+            <div class="profile-section">
+                <!-- Sender Info -->
+                <div class="party-section">
+                    <div class="profilePic">
+                        <img src="<%= notification.from.image %>" alt="User Picture">
+                    </div>
+                    <div class="party-info">
+                        <p><strong><%= notification.from.name %></strong> has <%- notification.message %></p>
+                    </div>
+                </div>
+
+                <!-- Party Details -->
+                <div class="party-section">
+                    <div class="profilePic">
+                        <img src="<%= party.symbol %>" alt="Party Symbol">
+                    </div>
+                    <div class="party-info">
+                        <p><strong>Manifesto:</strong> <%- party.manifesto %></p>
+                        <p><small>Received on: <%= new Date(notification.createdAt).toLocaleString() %></small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="/voter/home" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

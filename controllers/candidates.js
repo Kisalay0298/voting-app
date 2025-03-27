@@ -104,5 +104,5 @@ module.exports={
     addNewPCandidate,
     addNewCandidate,
     updateCandidate,
-    updateCandidatePersonalDetails
+    updateCandidatePersonalDetails,
 }

@@ -1,6 +1,7 @@
 const notificationModel = require('../model/notifications'); // Correct import
 const voterModel = require('../model/voter')
 const axios = require('axios');
+const mongoose = require("mongoose");
 
 const postNotification =  async (req, res) => {
     try {
@@ -43,13 +44,34 @@ const getNotification = async (req, res) => {
 
 
 // join any party as candidate
-const pushNotificationJoinParty = async (updated, voter, party)=> {
+const pushNotificationJoinParty = async (updated, voter, party, olderParty)=> {
     if (updated) {
         // Send a notification after successful candidate application
         try {
             await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
-                title: "New Party Application",
-                message: `requested to join ${party.name}.`,
+                title: "Switch Party Application",
+                message: `requested to switch from ${olderParty} to ${party.name}.`,
+                id: voter._id
+            });
+            console.log("Notification sent successfully.");
+        } catch (notifyError) {
+            console.error("Failed to send notification:", notifyError.message);
+        }
+
+    } else {
+        return res.redirect('/apply-for-candidate');
+    }
+}
+
+
+// join any party as candidate
+const pushNotificationJoinPartyNewCandidate = async (updated, voter, party)=> {
+    if (updated) {
+        // Send a notification after successful candidate application
+        try {
+            await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+                title: "Join a Party Application",
+                message: `requested to join ${party.name} party.`,
                 id: voter._id
             });
             console.log("Notification sent successfully.");
@@ -70,8 +92,9 @@ const pushNotificationJoinParty = async (updated, voter, party)=> {
 const pushNotificationCreateParty = async (updated, voter, party) => {
     try {
         await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
-            title: "New Candidate Application",
-            message: `requested to form ${party.name} party.`,
+            title: "New Party Application",
+            message: `requested to form new party named "<strong>${party.name}</strong>".`,
+            // message: `requested to form ${party.name} party.`,
             id: voter._id
         });
         console.log("Notification sent successfully.");
@@ -81,26 +104,6 @@ const pushNotificationCreateParty = async (updated, voter, party) => {
 };
 
 
-
-// update notification user name or image if profile updated
-// async function notificationOnProfileUpdate(user) {
-//     try {
-//         await notificationModel.updateMany(
-//             { "from.id": user._id }, // Find all notifications related to the user
-//             {
-//                 $set: {
-//                     "from.name": user.name,
-//                     "from.image": user.image
-//                 }
-//             }
-//         );
-
-//         console.log("Updated all notifications related to the user.");
-//     } catch (err) {
-//         console.error("Error updating notifications for profile update:", err);
-//     }
-// }
-const mongoose = require("mongoose");
 
 async function notificationOnProfileUpdate(user) {
     try {
@@ -142,5 +145,6 @@ module.exports={
     getNotification,
     pushNotificationJoinParty,
     pushNotificationCreateParty,
-    notificationOnProfileUpdate
+    notificationOnProfileUpdate,
+    pushNotificationJoinPartyNewCandidate
 }

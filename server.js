@@ -28,9 +28,9 @@ app.use('/user', user)
 app.use('/',notificationRoutes);
 
 
-app.get('/*', (req, res)=>{
-    res.redirect('/voter/home')
-})
+// app.get('/*', (req, res)=>{
+//     res.redirect('/voter/home')
+// })
 
 
 startServer()

@@ -448,11 +448,20 @@
 
                         // Create text container
                         const textDiv = document.createElement('div');
-                        textDiv.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.message}`;
+                        textDiv.innerHTML = `<strong>${notification.from.name}:</strong> ${notification.title}`;
+
+                        // Create clickable link
+                        const notificationLink = document.createElement('a');
+                        notificationLink.href = `/voter/feed?id=${notification._id}`; // Redirects to feed page
+                        notificationLink.style.textDecoration = "none";
+                        notificationLink.style.color = "inherit";
+                        notificationLink.style.display = "flex"; // Ensures proper alignment
+                        notificationLink.style.alignItems = "center";
 
                         // Append elements
-                        li.appendChild(img);
-                        li.appendChild(textDiv);
+                        notificationLink.appendChild(img);
+                        notificationLink.appendChild(textDiv);
+                        li.appendChild(notificationLink);
                         notificationList.appendChild(li);
                     });
                 }

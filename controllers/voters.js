@@ -4,7 +4,7 @@ const partyModel = require('../model/party')
 const candidateModel = require('../model/candidate')
 const { connectCloudinary, cloudinary } = require('../config/cloudinary'); 
 connectCloudinary();
-const { pushNotificationJoinParty, pushNotificationCreateParty, } = require('../controllers/notifications')
+const { pushNotificationJoinParty, pushNotificationCreateParty, pushNotificationJoinPartyNewCandidate } = require('../controllers/notifications')
 const { addNewCandidate, updateCandidate }= require('../controllers/candidates')
 
 
@@ -142,20 +142,28 @@ const applyForCandidate = async (req, res) => {
     try {
         const voterId = req.user._id;
         const alreadyCandidate = await candidateModel.findOne({ voterId });
+        let olderParty = null; // Default value if voter is not already a candidate
+        if (alreadyCandidate) {
+            olderParty = alreadyCandidate.party?.name || null;
+        }
         const { partyName } = req.body;
 
         const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted');
         const party = await partyModel.findOne({ name: partyName }).select('-leader -__v -formedBy -members -totalVotes -status -result -electionYear -createdAt');
-
+console.log("party: ", party)
         let updated;
         if (alreadyCandidate) {
+            console.log("applyForCandidate1: ", party)
             updated = await updateCandidate(party, voter, alreadyCandidate);
+            // also pushed notification
+            pushNotificationJoinParty(updated, voter, party, olderParty)
         }else{
+            console.log("applyForCandidate2: ", party)
             updated = await addNewCandidate(party, voter)
+            // also pushed notification
+            pushNotificationJoinPartyNewCandidate(updated, voter, party)
         }
 
-        // also pushed notification
-        pushNotificationJoinParty(updated, voter, party)
         return res.redirect(`/voter/home?message=Requested to join ${party.name} party successfully&type=success`);
 
     } catch (err) {
