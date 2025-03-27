@@ -16,7 +16,7 @@ async function restrictToLoginUserOnly(req, res, next) {
         const user = await voterModel.findById(decoded._id)
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.redirect('/login?message=User not found.&type=error');
         }
 
         req.user = user;
@@ -24,7 +24,7 @@ async function restrictToLoginUserOnly(req, res, next) {
         next();
     } 
     catch (error) {
-        return res.status(401).json({ message: "Unauthorized user!" });
+        return res.redirect('/login?message=Unauthorised user!&type=error');
     }
 }
 

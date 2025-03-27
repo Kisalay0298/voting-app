@@ -67,6 +67,12 @@ const updateCandidate = async (party, voter, existingCandidate) => {
         previousPartyName: oldPartyName,
         switchedAt: Date.now()
     });
+    
+    const prevParty =  await partyModel.findOne({name: oldPartyName})
+    if(prevParty.members.totalVotes > 0){
+        prevParty.members.totalVotes -= existingCandidate.voteCount
+    }
+    await prevParty.save();
 
     const updated = await existingCandidate.save();  // Fix: Correct async save syntax
     return updated;
