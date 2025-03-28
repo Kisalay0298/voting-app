@@ -34,8 +34,9 @@
 
 <br><br>
 
-🚀 **Live Demo:** [Click Here](https://voting-app.vercel.app)
+🚀 **For Live Demo:** [Click Here](https://voting-app-dun-one.vercel.app/)
 
+<br>
 
 ## 🚀 Installation & Setup
 ```sh
@@ -64,11 +65,9 @@ Contributions are welcome! Feel free to fork the repository and submit a pull re
 ## 📜 License
 This project is licensed under the MIT License. - see the [LICENSE](LICENSE) file for details. 
 
-/*
   * Copyright (c) 2024 Kisalay Komal
   * This project is licensed under the MIT License.
   * See the LICENSE file for more details.
-*/
 
 
 
