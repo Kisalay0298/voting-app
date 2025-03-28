@@ -34,7 +34,7 @@
 
 <br><br>
 
-🚀 **For Live Demo:** [Click Here](https://voting-app-dun-one.vercel.app/){:target="_blank"}
+🚀 **For Live Demo:** <a href="https://voting-app-dun-one.vercel.app/" target="_blank" rel="noopener noreferrer">Click Here</a>
 
 
 <br>
