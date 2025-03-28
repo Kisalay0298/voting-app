@@ -24,7 +24,7 @@
 |-------------------------|------------------------|
 | ![Notif](https://github.com/user-attachments/assets/e1c921c5-396c-41a4-b97b-da8f24c1c31c) | ![Stats](https://github.com/user-attachments/assets/39134cd8-8312-4cd7-a931-9087797b9954) |
 
-| Real-time Notifications | Vote Analysis Dashboard |
+| Real-time Notifications | Notification Expand |
 |-------------------------|------------------------|
 | ![Notif](https://github.com/user-attachments/assets/6eca22bf-9d8f-4c8c-ba3d-677298fe13a7) | ![Stats](https://github.com/user-attachments/assets/dc117e67-0af9-40fd-8297-bc10b78c0cd2) |
 
