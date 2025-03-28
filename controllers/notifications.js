@@ -46,13 +46,13 @@ const getNotification = async (req, res) => {
 
 
 
-
+const API_BASE_URL = process.env.API_BASE_URL || `http://localhost:${process.env.LOCALPORT}`
 // join any party as candidate
 const pushNotificationJoinParty = async (updated, voter, party, olderParty)=> {
     if (updated) {
         // Send a notification after successful candidate application
         try {
-            await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+            await axios.post(`${API_BASE_URL}/webhook/notifications`, {
                 title: "Switch Party Application",
                 message: `requested to switch from ${olderParty} to ${party.name}.`,
                 id: voter._id
@@ -72,7 +72,7 @@ const pushNotificationJoinPartyNewCandidate = async (updated, voter, party)=> {
     if (updated) {
         // Send a notification after successful candidate application
         try {
-            await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+            await axios.post(`${API_BASE_URL}/webhook/notifications`, {
                 title: "Join a Party Application",
                 message: `requested to join ${party.name} party.`,
                 id: voter._id
