@@ -1,7 +1,5 @@
 const candidateModel = require('../model/candidate')
-const voterModel = require('../model/voter')
 const partyModel = require('../model/party')
-const { pushNotificationJoinParty } = require('../controllers/notifications')
 
 
 const addNewPCandidate=async (req, res)=>{
@@ -33,8 +31,6 @@ const addNewCandidate = async( party, voter)=>{
     if (!party) {
         return res.redirect('/voter/apply-for-candidate?message=Party not found.&type=error');
     }
-
-    console.log("party: ", party._id);
 
     const newCandidate = new candidateModel({
         voterId: voter._id,
@@ -92,7 +88,6 @@ const updateCandidatePersonalDetails = async ( existingCandidate, user) => {
     if (user.phone !== existingCandidate.candidate.phone) {
         existingCandidate.candidate.phone = user.phone;
     }
-    console.log('candidate function updated successfully ', existingCandidate)
 
     const updated = await existingCandidate.save();  // Fix: Correct async save syntax
     return updated;

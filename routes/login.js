@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// const { signupLogic } = require('../controllers/login')
 const { handleUserSignup, handleUserLogin, signupLogic, loginLogic } = require('../controllers/signup')
 const { getCandidateToVote } = require('../controllers/voters')
 

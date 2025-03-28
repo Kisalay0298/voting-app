@@ -28,7 +28,6 @@ async function handleUserSignup(req, res) {
         }
 
         await voterModel.create(newUser)
-        console.log(newUser)
         return res.redirect('/login?message=Signup successful! Please log in.&type=success');
 
     } catch (err) {
@@ -79,6 +78,10 @@ const loginLogic = (req, res)=>{
     res.render('login');
 }
 
+const logoutLogic = (req, res)=>{
+    res.clearCookie('vToken');
+    res.redirect('/login')
+}
 
 
 const homePageEnterAnyUser = async (req, res) => {
@@ -104,5 +107,6 @@ module.exports = {
     handleUserLogin,
     signupLogic,
     loginLogic,
+    logoutLogic,
     homePageEnterAnyUser
 }

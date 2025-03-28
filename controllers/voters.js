@@ -150,15 +150,12 @@ const applyForCandidate = async (req, res) => {
 
         const voter = await voterModel.findById(voterId).select('-password -__v -qrCode -hasVoted');
         const party = await partyModel.findOne({ name: partyName }).select('-leader -__v -formedBy -members -totalVotes -status -result -electionYear -createdAt');
-console.log("party: ", party)
         let updated;
         if (alreadyCandidate) {
-            console.log("applyForCandidate1: ", party)
             updated = await updateCandidate(party, voter, alreadyCandidate);
             // also pushed notification
             pushNotificationJoinParty(updated, voter, party, olderParty)
         }else{
-            console.log("applyForCandidate2: ", party)
             updated = await addNewCandidate(party, voter)
             // also pushed notification
             pushNotificationJoinPartyNewCandidate(updated, voter, party)
@@ -191,10 +188,8 @@ const getApplyForCandidate = async (req, res) => {
 const getApplyForNewParty = async (req, res)=> {
     try {
         if (!req.user) {
-            console.log("User not found in req object.");
             return res.redirect('/login?message=Internal Server Error!&type=error');
         }
-        console.log(req.user)
         res.render('create-party', { user: req.user, error: null });
     } catch (error) {
         console.error("Error:", error);

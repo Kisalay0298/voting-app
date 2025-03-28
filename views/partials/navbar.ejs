@@ -342,7 +342,7 @@
             
             <!-- Dropdown Menu -->
             
-            <% if (user.role === 'admin') { %>
+            <% if (user.role === 'admin' || user.role === 'voter') { %>
                 <div class="dropdown">
                     <div class="dropdown-btn" id="drop" onclick="toggleDropdown()">
                         <a href="#">Election <i class="fa fa-angle-down" onclick="toggleDropdown()" style="font-size:15px"></i></a>
@@ -381,7 +381,7 @@
                     <ul>
                         <li><a href="/voter/profile">👤 View Profile</a></li>
                         <li><a href="/verify">✔️ Verify Account</a></li>
-                        <% if (user.role === 'admin') { %>
+                        <% if (user.role === 'admin' || user.role === 'voter') { %>
                             <li><a href="/contest">🏆 Contest Election</a></li>
                         <% } %>
                         <li><a href="/voter/create-party">🏛️ Form New Party</a></li>

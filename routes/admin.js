@@ -10,8 +10,6 @@ router.get("/view-result", restrictToLoginUserOnly, viewResult)
 router.post("/start-election", restrictToLoginUserOnly, startElection)
 router.post('/set-election-timer', setTimer);
 
-// router.get('/adminPanel', homePageEnterAnyUser);
-// router.get('/vote/analysis', homePageEnterAnyUser);
 
 // userProfile
 

@@ -3,15 +3,6 @@ const router = express.Router();
 const partyModel = require('../model/party'); // Import the Party model
 
 
-// router.get('/parties', async (req, res) => {
-//     try {
-//         const parties = await partyModel.find({}, 'name', 'symbol');
-//         res.status(200).json(parties);
-//     } catch (error) {
-//         console.error('Error fetching parties:', error);
-//         res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// });
 
 router.get('/parties', async (req, res) => {
     try {

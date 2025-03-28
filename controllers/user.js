@@ -4,7 +4,6 @@ const { connectCloudinary, cloudinary } = require('../config/cloudinary');
 connectCloudinary();
 const candidateModel = require('../model/candidate')
 const { notificationOnProfileUpdate } = require('./notifications');
-const { updateCandidate, updateCandidatePersonalDetails } = require('./candidates');
 
 // get user profile
 async function handleUserGetData(req, res) {
