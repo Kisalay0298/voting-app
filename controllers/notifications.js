@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const partyModel = require('../model/party')
 const candidateModel = require('../model/candidate')
 const notificationModule = require('../model/notifications');
-
+const API_BASE_URL = const API_BASE_URL = process.env.LOCALPORT
 
 
 
@@ -46,7 +46,6 @@ const getNotification = async (req, res) => {
 
 
 
-const API_BASE_URL = process.env.API_BASE_URL || `http://localhost:${process.env.LOCALPORT}`
 // join any party as candidate
 const pushNotificationJoinParty = async (updated, voter, party, olderParty)=> {
     if (updated) {
