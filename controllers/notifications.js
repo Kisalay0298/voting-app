@@ -92,7 +92,7 @@ const pushNotificationJoinPartyNewCandidate = async (updated, voter, party)=> {
 // Create party as candidate
 const pushNotificationCreateParty = async (updated, voter, party) => {
     try {
-        await axios.post(`http://localhost:${process.env.LOCALPORT}/webhook/notifications`, {
+        await axios.post(`${API_BASE_URL}/webhook/notifications`, {
             title: "New Party Application",
             message: `requested to form new party named "<strong>${party.name}</strong>".`,
             // message: `requested to form ${party.name} party.`,
